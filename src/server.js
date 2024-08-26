@@ -26,4 +26,4 @@ setInterval(() => {
   saveData();
   lantai4SaveData();
 }, 300000);
-// setInterval(fuelSaveData, 1800000)
+setInterval(fuelSaveData, 1800000)

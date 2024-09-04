@@ -221,7 +221,6 @@ const saveData = async () => {
    electric.query("INSERT INTO ups501 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups5.data.p502 + "," + ups5.data.v502 + "," + ups5.data.i502 + "," + ups5.data.f502 + ")", function (err, result) {
       if (err) console.log(err);
    });
-   console.log('Electricity Data Saved');
 };
 
 module.exports =  { realTimeData, saveData, electric };

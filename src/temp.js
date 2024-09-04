@@ -32,9 +32,7 @@ const lantai4RealTimeData = async () => {
         " WHERE id = 1"
     );
   } catch (error) {
-    temp.query(
-      "UPDATE battery4 SET updated_at = '" + update + "', t1 = 0, h1 = 0, t2 = 0, h2 = 0, t_avg = 0, h_avg = 0 WHERE id = 1"
-    );
+    
   }
   try {
     const recti = await axios.get("http://192.168.10.78/data");
@@ -60,9 +58,7 @@ const lantai4RealTimeData = async () => {
         " WHERE id = 1"
     );
   } catch (error) {
-    temp.query(
-      "UPDATE recti4 SET updated_at = '" + update + "', t1 = 0, h1 = 0, t2 = 0, h2 = 0, t3 = 0, h3 = 0, t_avg = 0, h_avg = 0 WHERE id = 1"
-    );
+    
   }
   try {
     const bss = await axios.get("http://192.168.10.73/data");
@@ -92,9 +88,7 @@ const lantai4RealTimeData = async () => {
         " WHERE id = 1"
     );
   } catch (error) {    
-    temp.query(
-      "UPDATE bss SET updated_at = '" + update + "', t1 = 0, h1 = 0, t2 = 0, h2 = 0, t3 = 0, h3 = 0, t4 = 0, h4 = 0, t_avg = 0, h_avg = 0 WHERE id = 1"
-    );
+    
   }
   try {
     const inter = await axios.get("http://192.168.10.76/data");
@@ -124,9 +118,7 @@ const lantai4RealTimeData = async () => {
         " WHERE id = 1"
     );
   } catch (error) {
-    temp.query(
-      "UPDATE inter SET updated_at = '" + update + "', t1 = 0, h1 = 0, t2 = 0, h2 = 0, t3 = 0, h3 = 0, t4 = 0, h4 = 0, t_avg = 0, h_avg = 0 WHERE id = 1"
-    );
+    
   }
   try {
     const trans = await axios.get("http://192.168.10.77/data");
@@ -164,9 +156,7 @@ const lantai4RealTimeData = async () => {
         " WHERE id = 1"
     );
   } catch (error) {
-    temp.query(
-      "UPDATE trans SET updated_at = '" + update + "', t1 = 0, h1 = 0, t2 = 0, h2 = 0, t3 = 0, h3 = 0, t4 = 0, h4 = 0, t5 = 0, h5 = 0, t6 = 0, h6 = 0, t_avg = 0, h_avg = 0 WHERE id = 1"
-    );
+    
   }
 };
 
@@ -197,7 +187,7 @@ const lantai4SaveData = async () => {
       }
     );
   } catch (error) {
-    console.log("Ruang Battery : " + error.message);
+    console.log(error.message + " : Floor 4 Battery Room");
     temp.query(
       "INSERT INTO battery4 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES ('" + update + "', 0, 0, 0, 0, 0, 0)",
       function (err, result) {
@@ -232,7 +222,7 @@ const lantai4SaveData = async () => {
       }
     );
   } catch (error) {
-    console.log("Ruang Rectifier : " + error.message);
+    console.log(error.message + " : Floor 4 Rectifier Room");
     temp.query(
       "INSERT INTO recti4 (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES ('" + update + "', 0, 0, 0, 0, 0, 0, 0, 0)",
       function (err, result) {
@@ -271,7 +261,7 @@ const lantai4SaveData = async () => {
       }
     );
   } catch (error) {
-    console.log("Ruang BSS : " + error.message);
+    console.log(error.message + " : Floor 4 BSS/TRAU Room");
     temp.query(
       "INSERT INTO bss (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES ('" + update + "', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
       function (err, result) {
@@ -310,7 +300,7 @@ const lantai4SaveData = async () => {
       }
     );
   } catch (error) {
-    console.log("Ruang Interkoneksi : " + error.message);
+    console.log(error.message + " : Floor 4 Interconnection Room");
     temp.query(
       "INSERT INTO inter (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES ('" + update + "', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
       function (err, result) {
@@ -357,7 +347,7 @@ const lantai4SaveData = async () => {
       }
     );
   } catch (error) {
-    console.log("Ruang Transmisi : " + error.message);
+    console.log(error.message + " : Floor 4 Transmission Room");
     temp.query(
       "INSERT INTO trans (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES ('" + update + "', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
       function (err, result) {
@@ -365,7 +355,6 @@ const lantai4SaveData = async () => {
       }
     );
   }
-  console.log("4th Floor Temperature Data Saved");
 };
 
 module.exports = { lantai4RealTimeData, lantai4SaveData, temp };

@@ -190,11 +190,11 @@ const saveData = async () => {
       if (err) console.log(err);
    });
    // query for Panel 3.10 table
-   electric.query("INSERT INTO p305 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p305.data.p310 + "," + p305.data.v310 + "," + p305.data.i310 + "," + p305.data.f310 + ")", function (err, result) {
+   electric.query("INSERT INTO p310 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p305.data.p310 + "," + p305.data.v310 + "," + p305.data.i310 + "," + p305.data.f310 + ")", function (err, result) {
       if (err) console.log(err);
    });
    // query for Panel 4.29 table
-   electric.query("INSERT INTO p236 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p429.data.p + "," + p429.data.v + "," + p429.data.i + "," + p429.data.f + ")", function (err, result) {
+   electric.query("INSERT INTO p429 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p429.data.p + "," + p429.data.v + "," + p429.data.i + "," + p429.data.f + ")", function (err, result) {
       if (err) console.log(err);
    });
    // query for UPS 2.02 table
@@ -218,7 +218,7 @@ const saveData = async () => {
       if (err) console.log(err);
    });
    // query for UPS 5.02 table
-   electric.query("INSERT INTO ups501 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups5.data.p502 + "," + ups5.data.v502 + "," + ups5.data.i502 + "," + ups5.data.f502 + ")", function (err, result) {
+   electric.query("INSERT INTO ups502 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups5.data.p502 + "," + ups5.data.v502 + "," + ups5.data.i502 + "," + ups5.data.f502 + ")", function (err, result) {
       if (err) console.log(err);
    });
 };

@@ -27,13 +27,7 @@ const fuelSaveData = async () => {
       }
     );
   } catch (error) {
-    console.log(error.message + " : Daily Tank");
-    fuel.query(
-      "INSERT INTO daily_tank (updated_at, tank1, tank2) VALUES ('" + update + "', 0, 0)",
-      function (err, result) {
-        if (err) console.log(err);
-      }
-    );
+    console.log(error.message + " : Tangki Harian");
   }
   // try {
   //   const monthly = await axios.get("http://192.168.10.11/data");

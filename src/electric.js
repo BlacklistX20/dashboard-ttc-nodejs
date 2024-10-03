@@ -152,13 +152,15 @@ const saveData = async () => {
    let vIt = avg(vRecti, vUPS);
    let fIt = avg(fRecti, fUPS);
 
+   let facility = ((parseFloat(lvmdp.data.p)) - pIt).toFixed(2);
+
    let pue = ((parseFloat(lvmdp.data.p)) / pIt).toFixed(2);
  
    const d = new Date();
    let update = d.toLocaleString("sv-SE");
 
    // query for PUE table
-   electric.query("INSERT INTO pue (updated_at, lvmdp, recti, ups, it, pue) VALUES ('" + update + "'," + lvmdp.data.p + "," + pRecti + "," + pUPS + "," + pIt + "," + pue + ")", function (err, result) {
+   electric.query("INSERT INTO pue (updated_at, pue, it, facility) VALUES ('" + update + "'," + pue + "," + pIt + "," + facility + ")", function (err, result) {
 		if (err) console.log(err);
 	});
    // query for LVMDP table

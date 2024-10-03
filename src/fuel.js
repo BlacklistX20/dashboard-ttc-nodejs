@@ -18,9 +18,9 @@ const fuelSaveData = async () => {
       "INSERT INTO daily_tank (updated_at, tank1, tank2) VALUES ('" +
         update +
         "'," +
-        daily.data.t1 +
+        daily.data.th1 +
         "," +
-        daily.data.t2 +
+        daily.data.th2 +
         ")",
       function (err, result) {
         if (err) console.log(err);

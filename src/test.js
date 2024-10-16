@@ -443,6 +443,155 @@ async function saveUps502() {
   }
 }
 
+// Real Time pue
+async function rtPue() {
+  const { pue } = await calculatePue();
+
+  const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  const sql = `UPDATE real_time SET last_update = ?, loads = ?, current = 0, voltage = 0, frequency = 0 WHERE id = 1`;
+
+  conn.query(sql, [datetime, pue]);
+}
+
+const sql = `UPDATE real_time SET last_update = ?, loads = ?, current = ?, voltage = ?, frequency = ? WHERE id = ?`;
+
+// Real Time lvmdp
+async function rtLvmdp() {
+  const data = await fetchData("http://192.168.10.13/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 2]);
+  }
+}
+
+// Real Time IT
+async function rtIt() {
+  const { pSum, iSum, vAvg, fAvg } = await calculateIt();
+
+  const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  conn.query(sql, [datetime, pSum, iSum, vAvg, fAvg, 3]);
+}
+
+// Real Time recti
+async function rtRecti() {
+  const { pSum, iSum, vAvg, fAvg } = await calculateRecti();
+
+  const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  conn.query(sql, [datetime, pSum, iSum, vAvg, fAvg, 4]);
+}
+
+// Real Time UPS
+async function rtUps() {
+  const { pSum, iSum, vAvg, fAvg } = await calculateUps();
+
+  const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  conn.query(sql, [datetime, pSum, iSum, vAvg, fAvg, 5]);
+}
+
+// Real Time Panel 2.05
+async function rtP205() {
+  const data = await fetchData("http://192.168.10.32/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 6]);
+  }
+}
+
+// Real Time Panel 2.36
+async function rtP236() {
+  const data = await fetchData("http://192.168.10.33/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 7]);
+  }
+}
+
+// Real Time Panel 3.05
+async function rtP305() {
+  const data = await fetchData("http://192.168.10.52/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 8]);
+  }
+}
+
+// Real Time Panel 3.10
+async function rtP310() {
+  const data = await fetchData("http://192.168.10.51/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 9]);
+  }
+}
+
+// Real Time Panel 4.29
+async function rtP429() {
+  const data = await fetchData("http://192.168.10.75/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 10]);
+  }
+}
+
+// Real Time UPS 2.02
+async function rtUps202() {
+  const data = await fetchData("http://192.168.10.34/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 11]);
+  }
+}
+
+// Real Time UPS 2.03
+async function rtUps203() {
+  const data = await fetchData("http://192.168.10.35/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 12]);
+  }
+}
+
+// Real Time UPS 3.01
+async function rtUps301() {
+  const data = await fetchData("http://192.168.10.53/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 13]);
+  }
+}
+
+// Real Time UPS 3.02
+async function rtUps302() {
+  const data = await fetchData("http://192.168.10.54/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 14]);
+  }
+}
+
+// Real Time UPS 5A
+async function rtUps501() {
+  const data = await fetchData("http://192.168.10.92/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 15]);
+  }
+}
+
+// Real Time UPS 5B
+async function rtUps502() {
+  const data = await fetchData("http://192.168.10.93/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 16]);
+  }
+}
+
 // Save all data simultaneously
 async function saveAllData() {
   await saveLvmdp();
@@ -463,4 +612,23 @@ async function saveAllData() {
   await savePue();
 }
 
-module.exports = { conn, saveAllData };
+async function saveRealTimeData() {
+  rtPue();
+  rtLvmdp();
+  rtIt();
+  rtRecti();
+  rtUps();
+  rtP205();
+  rtP236();
+  rtP305();
+  rtP310();
+  rtP429();
+  rtUps202();
+  rtUps203();
+  rtUps301();
+  rtUps302();
+  rtUps501();
+  rtUps502();
+}
+
+module.exports = { conn, saveAllData, saveRealTimeData };

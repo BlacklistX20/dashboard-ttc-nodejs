@@ -1,6 +1,6 @@
 const { lantai4RealTimeData, lantai4SaveData, temp } = require('./temp');
 const { fuel, fuelSaveData } = require('./fuel');
-const { conn, saveAllData } = require('./test');
+const { conn, saveAllData, saveRealTimeData } = require('./test');
 
 conn.connect(function (err) {
   if (err) throw err;
@@ -17,7 +17,10 @@ fuel.connect(function (err) {
   console.log("Fuel Tank Database connected!");
 });
 
-setInterval(lantai4RealTimeData, 1000);
+setInterval(() => {
+  lantai4RealTimeData();
+  saveRealTimeData();
+}, 1000);
 setInterval(() => {
   saveAllData();
   lantai4SaveData();

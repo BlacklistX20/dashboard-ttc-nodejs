@@ -29,12 +29,12 @@ async function calculatePue() {
     "http://192.168.10.51/data",
     "http://192.168.10.52/data",
     "http://192.168.10.75/data",
-  ];
-
-  const urlsPA = [
     "http://192.168.10.34/data",
+    "http://192.168.10.35/data",
     "http://192.168.10.53/data",
+    "http://192.168.10.54/data",
     "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
   ];
 
   let pSum = 0;
@@ -48,13 +48,13 @@ async function calculatePue() {
   }
 
   // Adding pA and pB values from the second group of URLs
-  for (const url of urlsPA) {
-    const data = await fetchData(url);
-    if (data) {
-      pSum += parseFloat(data.pA);
-      pSum += parseFloat(data.pB);
-    }
-  }
+  // for (const url of urlsPA) {
+  //   const data = await fetchData(url);
+  //   if (data) {
+  //     pSum += parseFloat(data.pA);
+  //     pSum += parseFloat(data.pB);
+  //   }
+  // }
 
   // Fetching data from lvmdp
   const dataLvmdp = await fetchData("http://192.168.10.13/data");
@@ -77,8 +77,11 @@ async function calculateIt() {
     "http://192.168.10.52/data",
     "http://192.168.10.75/data",
     "http://192.168.10.34/data",
+    "http://192.168.10.35/data",
     "http://192.168.10.53/data",
+    "http://192.168.10.54/data",
     "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
   ];
 
   let pSum = 0;
@@ -90,20 +93,20 @@ async function calculateIt() {
   for (const url of urls) {
     const data = await fetchData(url);
     if (data) {
-      if (data.p) {
+      // if (data.p) {
         pSum += parseFloat(data.p);
         iSum += parseFloat(data.i);
         vSum += parseFloat(data.v);
         fSum += parseFloat(data.f);
         count++;
-      } else if (data.pA && data.pB) {
-        // Add all values from pA, pB, iA, iB, and vA, vB, fA, fB individually
-        pSum += parseFloat(data.pA) + parseFloat(data.pB);
-        iSum += parseFloat(data.iA) + parseFloat(data.iB);
-        vSum += parseFloat(data.vA) + parseFloat(data.vB);
-        fSum += parseFloat(data.fA) + parseFloat(data.fB);
-        count += 2; // Since we have two sets of data for this address
-      }
+      // } else if (data.pA && data.pB) {
+      //   // Add all values from pA, pB, iA, iB, and vA, vB, fA, fB individually
+      //   pSum += parseFloat(data.pA) + parseFloat(data.pB);
+      //   iSum += parseFloat(data.iA) + parseFloat(data.iB);
+      //   vSum += parseFloat(data.vA) + parseFloat(data.vB);
+      //   fSum += parseFloat(data.fA) + parseFloat(data.fB);
+      //   count += 2; // Since we have two sets of data for this address
+      // }
     }
   }
 
@@ -150,8 +153,11 @@ async function calculateRecti() {
 async function calculateUps() {
   const urls = [
     "http://192.168.10.34/data",
+    "http://192.168.10.35/data",
     "http://192.168.10.53/data",
+    "http://192.168.10.54/data",
     "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
   ];
 
   let pSum = 0;
@@ -163,12 +169,11 @@ async function calculateUps() {
   for (const url of urls) {
     const data = await fetchData(url);
     if (data) {
-      // Add all values from pA, pB, iA, iB, and vA, vB, fA, fB individually
-      pSum += parseFloat(data.pA) + parseFloat(data.pB);
-      iSum += parseFloat(data.iA) + parseFloat(data.iB);
-      vSum += parseFloat(data.vA) + parseFloat(data.vB);
-      fSum += parseFloat(data.fA) + parseFloat(data.fB);
-      count += 2; // Since we have two sets of data for this address
+      pSum += parseFloat(data.p);
+      iSum += parseFloat(data.i);
+      vSum += parseFloat(data.v);
+      fSum += parseFloat(data.f);
+      count++;
     }
   }
 
@@ -342,21 +347,29 @@ async function savePanel429() {
   }
 }
 
-// Save data for ups2 (http://192.168.10.34/data)
-async function saveUps2() {
+// Save data for ups2.02 (http://192.168.10.34/data)
+async function saveUps202() {
   const data = await fetchData("http://192.168.10.34/data");
   if (data) {
     const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
-    const sql1 = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql1, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
+    const sql = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 2.02 table:", err);
       } else {
         console.log("Data inserted into UPS 2.02 table");
       }
     });
-    const sql2 = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql2, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
+  }
+}
+
+// Save data for ups2.03 (http://192.168.10.35/data)
+async function saveUps203() {
+  const data = await fetchData("http://192.168.10.35/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const sql = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 2.03 table:", err);
       } else {
@@ -366,21 +379,29 @@ async function saveUps2() {
   }
 }
 
-// Save data for ups3 (http://192.168.10.53/data)
-async function saveUps3() {
+// Save data for ups3.01 (http://192.168.10.53/data)
+async function saveUps301() {
   const data = await fetchData("http://192.168.10.53/data");
   if (data) {
     const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
-    const sql1 = `INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql1, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
+    const sql = `INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 3.01 table:", err);
       } else {
         console.log("Data inserted into UPS 3.01 table");
       }
     });
-    const sql2 = `INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql2, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
+  }
+}
+
+// Save data for ups3.02 (http://192.168.10.54/data)
+async function saveUps302() {
+  const data = await fetchData("http://192.168.10.54/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const sql = `INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 3.02 table:", err);
       } else {
@@ -390,21 +411,29 @@ async function saveUps3() {
   }
 }
 
-// Save data for ups5 (http://192.168.10.92/data)
-async function saveUps5() {
+// Save data for ups5.01 (http://192.168.10.92/data)
+async function saveUps501() {
   const data = await fetchData("http://192.168.10.92/data");
   if (data) {
     const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
-    const sql1 = `INSERT INTO ups501 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql1, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
+    const sql = `INSERT INTO ups501 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 5.01 table:", err);
       } else {
         console.log("Data inserted into UPS 5.01 table");
       }
     });
-    const sql2 = `INSERT INTO ups502 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
-    conn.query(sql2, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
+  }
+}
+
+// Save data for ups5.02 (http://192.168.10.93/data)
+async function saveUps502() {
+  const data = await fetchData("http://192.168.10.93/data");
+  if (data) {
+    const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const sql = `INSERT INTO ups502 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    conn.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
         console.error("Error inserting into UPS 5.02 table:", err);
       } else {
@@ -425,9 +454,12 @@ async function saveAllData() {
   await savePanel310();
   await savePanel305();
   await savePanel429();
-  await saveUps2();
-  await saveUps3();
-  await saveUps5();
+  await saveUps202();
+  await saveUps203();
+  await saveUps301();
+  await saveUps302();
+  await saveUps501();
+  await saveUps502();
   await savePue();
 }
 

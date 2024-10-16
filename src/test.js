@@ -47,15 +47,6 @@ async function calculatePue() {
     }
   }
 
-  // Adding pA and pB values from the second group of URLs
-  // for (const url of urlsPA) {
-  //   const data = await fetchData(url);
-  //   if (data) {
-  //     pSum += parseFloat(data.pA);
-  //     pSum += parseFloat(data.pB);
-  //   }
-  // }
-
   // Fetching data from lvmdp
   const dataLvmdp = await fetchData("http://192.168.10.13/data");
   const loadLvmdp = dataLvmdp ? parseFloat(dataLvmdp.p) : 0;
@@ -93,20 +84,11 @@ async function calculateIt() {
   for (const url of urls) {
     const data = await fetchData(url);
     if (data) {
-      // if (data.p) {
-        pSum += parseFloat(data.p);
-        iSum += parseFloat(data.i);
-        vSum += parseFloat(data.v);
-        fSum += parseFloat(data.f);
-        count++;
-      // } else if (data.pA && data.pB) {
-      //   // Add all values from pA, pB, iA, iB, and vA, vB, fA, fB individually
-      //   pSum += parseFloat(data.pA) + parseFloat(data.pB);
-      //   iSum += parseFloat(data.iA) + parseFloat(data.iB);
-      //   vSum += parseFloat(data.vA) + parseFloat(data.vB);
-      //   fSum += parseFloat(data.fA) + parseFloat(data.fB);
-      //   count += 2; // Since we have two sets of data for this address
-      // }
+      pSum += parseFloat(data.p);
+      iSum += parseFloat(data.i);
+      vSum += parseFloat(data.v);
+      fSum += parseFloat(data.f);
+      count++;
     }
   }
 
@@ -251,7 +233,7 @@ async function saveUps() {
   });
 }
 
-// Save data for lvmdp (http://192.168.10.13/data)
+// Save data for lvmdp
 async function saveLvmdp() {
   const data = await fetchData("http://192.168.10.13/data");
   if (data) {
@@ -267,7 +249,7 @@ async function saveLvmdp() {
   }
 }
 
-// Save data for panel205 (http://192.168.10.32/data)
+// Save data for panel205
 async function savePanel205() {
   const data = await fetchData("http://192.168.10.32/data");
   if (data) {
@@ -283,7 +265,7 @@ async function savePanel205() {
   }
 }
 
-// Save data for panel236 (http://192.168.10.33/data)
+// Save data for panel236
 async function savePanel236() {
   const data = await fetchData("http://192.168.10.33/data");
   if (data) {
@@ -299,7 +281,7 @@ async function savePanel236() {
   }
 }
 
-// Save data for panel310 (http://192.168.10.51/data)
+// Save data for panel310
 async function savePanel310() {
   const data = await fetchData("http://192.168.10.51/data");
   if (data) {
@@ -315,7 +297,7 @@ async function savePanel310() {
   }
 }
 
-// Save data for panel305 (http://192.168.10.52/data)
+// Save data for panel305
 async function savePanel305() {
   const data = await fetchData("http://192.168.10.52/data");
   if (data) {
@@ -331,7 +313,7 @@ async function savePanel305() {
   }
 }
 
-// Save data for panel429 (http://192.168.10.75/data)
+// Save data for panel429
 async function savePanel429() {
   const data = await fetchData("http://192.168.10.75/data");
   if (data) {
@@ -347,7 +329,7 @@ async function savePanel429() {
   }
 }
 
-// Save data for ups2.02 (http://192.168.10.34/data)
+// Save data for ups2.02
 async function saveUps202() {
   const data = await fetchData("http://192.168.10.34/data");
   if (data) {
@@ -363,7 +345,7 @@ async function saveUps202() {
   }
 }
 
-// Save data for ups2.03 (http://192.168.10.35/data)
+// Save data for ups2.03
 async function saveUps203() {
   const data = await fetchData("http://192.168.10.35/data");
   if (data) {
@@ -379,7 +361,7 @@ async function saveUps203() {
   }
 }
 
-// Save data for ups3.01 (http://192.168.10.53/data)
+// Save data for ups3.01
 async function saveUps301() {
   const data = await fetchData("http://192.168.10.53/data");
   if (data) {
@@ -395,7 +377,7 @@ async function saveUps301() {
   }
 }
 
-// Save data for ups3.02 (http://192.168.10.54/data)
+// Save data for ups3.02
 async function saveUps302() {
   const data = await fetchData("http://192.168.10.54/data");
   if (data) {
@@ -411,7 +393,7 @@ async function saveUps302() {
   }
 }
 
-// Save data for ups5.01 (http://192.168.10.92/data)
+// Save data for ups5.01
 async function saveUps501() {
   const data = await fetchData("http://192.168.10.92/data");
   if (data) {
@@ -427,7 +409,7 @@ async function saveUps501() {
   }
 }
 
-// Save data for ups5.02 (http://192.168.10.93/data)
+// Save data for ups5.02
 async function saveUps502() {
   const data = await fetchData("http://192.168.10.93/data");
   if (data) {

@@ -26,8 +26,8 @@ async function calculatePue() {
     "http://192.168.10.13/data",
     "http://192.168.10.32/data",
     "http://192.168.10.33/data",
-    "http://192.168.10.51/data",
     "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
     "http://192.168.10.75/data",
     "http://192.168.10.34/data",
     "http://192.168.10.35/data",
@@ -64,8 +64,8 @@ async function calculateIt() {
   const urls = [
     "http://192.168.10.32/data",
     "http://192.168.10.33/data",
-    "http://192.168.10.51/data",
     "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
     "http://192.168.10.75/data",
     "http://192.168.10.34/data",
     "http://192.168.10.35/data",
@@ -103,8 +103,8 @@ async function calculateRecti() {
   const urls = [
     "http://192.168.10.32/data",
     "http://192.168.10.33/data",
-    "http://192.168.10.51/data",
     "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
     "http://192.168.10.75/data",
   ];
 
@@ -283,7 +283,7 @@ async function savePanel236() {
 
 // Save data for panel310
 async function savePanel310() {
-  const data = await fetchData("http://192.168.10.51/data");
+  const data = await fetchData("http://192.168.10.55/data");
   if (data) {
     const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
     const sql = `INSERT INTO p310 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
@@ -504,7 +504,7 @@ async function rtP305() {
 
 // Real Time Panel 3.10
 async function rtP310() {
-  const data = await fetchData("http://192.168.10.51/data");
+  const data = await fetchData("http://192.168.10.55/data");
   if (data) {
     const datetime = new Date().toISOString().slice(0, 19).replace("T", " ");
     conn.query(sql, [datetime, data.p, data.i, data.v, data.f, 9]);

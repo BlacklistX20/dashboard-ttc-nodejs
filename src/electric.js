@@ -130,7 +130,7 @@ const saveData = async () => {
    const p205 = await axios.get("http://192.168.10.32/data");
    const p236 = await axios.get("http://192.168.10.33/data");
    const p305 = await axios.get("http://192.168.10.52/data");
-   const p310 = await axios.get("http://192.168.10.56/data");
+   const p310 = await axios.get("http://192.168.10.55/data");
    const p429 = await axios.get("http://192.168.10.75/data");
  
    const ups2 = await axios.get("http://192.168.10.34/data");

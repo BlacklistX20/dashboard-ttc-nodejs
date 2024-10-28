@@ -38,10 +38,10 @@ const realTimeData = async () => {
    const ups3 = await axios.get("http://192.168.10.53/data");
    const ups5 = await axios.get("http://192.168.10.92/data");
  
-   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p), parseFloat(p310.data.p), parseFloat(p429.data.p));
-   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i), parseFloat(p310.data.i), parseFloat(p429.data.i));
-   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v), parseFloat(p310.data.v), parseFloat(p429.data.v));
-   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f), parseFloat(p310.data.f), parseFloat(p429.data.f));
+   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p305), parseFloat(p310.data.p310), parseFloat(p429.data.p));
+   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i305), parseFloat(p310.data.i310), parseFloat(p429.data.i));
+   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v305), parseFloat(p310.data.v310), parseFloat(p429.data.v));
+   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f305), parseFloat(p310.data.f310), parseFloat(p429.data.f));
  
    let pUPS = sum(parseFloat(ups2.data.p243), parseFloat(ups2.data.p242), parseFloat(ups3.data.pA), parseFloat(ups3.data.pB), parseFloat(ups5.data.p501), parseFloat(ups5.data.p502));
    let iUPS = sum(parseFloat(ups2.data.i243), parseFloat(ups2.data.i242), parseFloat(ups3.data.iA), parseFloat(ups3.data.iB), parseFloat(ups5.data.i501), parseFloat(ups5.data.i502));
@@ -87,11 +87,11 @@ const realTimeData = async () => {
       if (err) console.log(err);
    });
    // query for real time panel 3.05
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p305.data.p + ", current = " + p305.data.i + ", voltage = " + p305.data.v + ", frequency = " + p305.data.f + " WHERE id = 8", function (err, result) {
+   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p305.data.p305 + ", current = " + p305.data.i305 + ", voltage = " + p305.data.v305 + ", frequency = " + p305.data.f305 + " WHERE id = 8", function (err, result) {
       if (err) console.log(err);
    });
    // query for real time panel 3.10
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p310.data.p + ", current = " + p310.data.i + ", voltage = " + p310.data.v + ", frequency = " + p310.data.f + " WHERE id = 9", function (err, result) {
+   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p310.data.p310 + ", current = " + p310.data.i310 + ", voltage = " + p310.data.v310 + ", frequency = " + p310.data.f310 + " WHERE id = 9", function (err, result) {
       if (err) console.log(err);
    });
    // query for real time panel 4.29
@@ -137,10 +137,10 @@ const saveData = async () => {
    const ups3 = await axios.get("http://192.168.10.53/data");
    const ups5 = await axios.get("http://192.168.10.92/data");
  
-   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p), parseFloat(p310.data.p), parseFloat(p429.data.p));
-   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i), parseFloat(p310.data.i), parseFloat(p429.data.i));
-   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v), parseFloat(p310.data.v), parseFloat(p429.data.v));
-   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f), parseFloat(p310.data.f), parseFloat(p429.data.f));
+   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p305), parseFloat(p310.data.p310), parseFloat(p429.data.p));
+   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i305), parseFloat(p310.data.i310), parseFloat(p429.data.i));
+   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v305), parseFloat(p310.data.v310), parseFloat(p429.data.v));
+   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f305), parseFloat(p310.data.f310), parseFloat(p429.data.f));
  
    let pUPS = sum(parseFloat(ups2.data.p243), parseFloat(ups2.data.p242), parseFloat(ups3.data.pA), parseFloat(ups3.data.pB), parseFloat(ups5.data.p501), parseFloat(ups5.data.p502));
    let iUPS = sum(parseFloat(ups2.data.i243), parseFloat(ups2.data.i242), parseFloat(ups3.data.iA), parseFloat(ups3.data.iB), parseFloat(ups5.data.i501), parseFloat(ups5.data.i502));
@@ -188,11 +188,11 @@ const saveData = async () => {
       if (err) console.log(err);
    });
    // query for Panel 3.05 table
-   electric.query("INSERT INTO p305 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p305.data.p+ "," + p305.data.v+ "," + p305.data.i+ "," + p305.data.f+ ")", function (err, result) {
+   electric.query("INSERT INTO p305 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p305.data.p305+ "," + p305.data.v305+ "," + p305.data.i305+ "," + p305.data.f305+ ")", function (err, result) {
       if (err) console.log(err);
    });
    // query for Panel 3.10 table
-   electric.query("INSERT INTO p310 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p310.data.p + "," + p310.data.v + "," + p310.data.i + "," + p310.data.f + ")", function (err, result) {
+   electric.query("INSERT INTO p310 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p310.data.p310 + "," + p310.data.v310 + "," + p310.data.i310 + "," + p310.data.f310 + ")", function (err, result) {
       if (err) console.log(err);
    });
    // query for Panel 4.29 table

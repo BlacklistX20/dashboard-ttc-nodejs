@@ -1,7 +1,7 @@
 const { realTimeData, saveData, electric } = require('./electric');
 const { lantai4RealTimeData, lantai4SaveData, temp } = require('./temp');
 const { fuel, fuelSaveData } = require('./fuel');
-const { conn, saveAllData } = require('./test');
+const { conn, saveAllData, saveRealTimeData } = require('./test');
 
 
 electric.connect(function (err) {
@@ -9,10 +9,10 @@ electric.connect(function (err) {
   console.log("Electric Database connected!");
 });
 
-conn.connect(function (err) {
-  if (err) throw err;
-  console.log("Database Connected!");
-});
+// conn.connect(function (err) {
+//   if (err) throw err;
+//   console.log("Database Connected!");
+// });
 
 temp.connect(function (err) {
   if (err) throw err;
@@ -26,6 +26,7 @@ fuel.connect(function (err) {
 
 setInterval(() => {
   realTimeData();
+  // saveRealTimeData();
   lantai4RealTimeData();
 }, 1000);
 setInterval(() => {

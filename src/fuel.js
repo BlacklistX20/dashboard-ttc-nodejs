@@ -5,7 +5,7 @@ var fuel = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "fuel_tank",
+  database: "fuel",
 });
 
 const fuelSaveData = async () => {
@@ -15,7 +15,7 @@ const fuelSaveData = async () => {
   try {
     const daily = await axios.get("http://192.168.10.11/data");
     fuel.query(
-      "INSERT INTO daily_tank (updated_at, tank1, tank2) VALUES ('" +
+      "INSERT INTO daily (updated_at, tank1, tank2) VALUES ('" +
         update +
         "'," +
         daily.data.th1 +
@@ -32,7 +32,7 @@ const fuelSaveData = async () => {
   // try {
   //   const monthly = await axios.get("http://192.168.10.11/data");
   //   fuel.query(
-  //     "INSERT INTO monthly_tank (updated_at, tank1, tank2, tank3) VALUES ('" +
+  //     "INSERT INTO monthly (updated_at, tank1, tank2, tank3) VALUES ('" +
   //       update +
   //       "'," +
   //       monthly.data.t1 +
@@ -47,7 +47,7 @@ const fuelSaveData = async () => {
   //   );
   // } catch (error) {
   //   fuel.query(
-  //     "INSERT INTO monthly_tank (updated_at, tank1, tank2, tank3) VALUES ('" + update +"', 0, 0, 0)",
+  //     "INSERT INTO monthly (updated_at, tank1, tank2, tank3) VALUES ('" + update +"', 0, 0, 0)",
   //     function (err, result) {
   //       if (err) console.log(err);
   //     }

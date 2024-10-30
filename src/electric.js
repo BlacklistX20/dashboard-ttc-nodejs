@@ -5,7 +5,7 @@ var electric = mysql.createConnection({
    host: "localhost",
    user: "root",
    password: "",
-   database: "pue",
+   database: "power",
 });
 
 function avg(...nums) {

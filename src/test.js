@@ -6,7 +6,7 @@ const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "pue", // Update with your actual database name
+  database: "power", // Update with your actual database name
 });
 
 // Function to fetch data from a URL

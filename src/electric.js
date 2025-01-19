@@ -1,228 +1,461 @@
 const axios = require("axios");
 const mysql = require("mysql");
 
-var electric = mysql.createConnection({
-   host: "localhost",
-   user: "root",
-   password: "",
-   database: "power",
+// MySQL Connection
+const electric = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "power", // Update with your actual database name
 });
 
-function avg(...nums) {
-	let sum = 0;
-	nums.forEach((num) => {
-		sum += num;
-	});
-	let avg = sum / nums.length;
-	return avg;
+// Function to fetch data from a URL
+async function fetchData(url) {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (err) {
+    return null;
+  }
 }
 
-function sum(...nums) {
-	let sum = 0;
-	nums.forEach((num) => {
-		sum += num;
-	});
-	return sum;
+function getDate() {
+  const d = new Date();
+  const options = {
+    year: 'numeric', month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  };
+  return d.toLocaleString('en-CA', options).replace(',', '');
 }
 
-const realTimeData = async () => {
-   const lvmdp = await axios.get("http://192.168.10.13/data");
+// Function to process PUE
+async function calculatePue() {
+  const urls = [
+    "http://192.168.10.13/data",
+    "http://192.168.10.32/data",
+    "http://192.168.10.33/data",
+    "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
+    "http://192.168.10.75/data",
+    "http://192.168.10.34/data",
+    "http://192.168.10.53/data",
+    "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
+  ];
 
-   const p205 = await axios.get("http://192.168.10.32/data");
-   const p236 = await axios.get("http://192.168.10.33/data");
-   const p305 = await axios.get("http://192.168.10.52/data");
-   const p310 = await axios.get("http://192.168.10.55/data");
-   const p429 = await axios.get("http://192.168.10.75/data");
- 
-   const ups2 = await axios.get("http://192.168.10.34/data");
-   const ups3 = await axios.get("http://192.168.10.53/data");
-   const ups5 = await axios.get("http://192.168.10.92/data");
- 
-   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p305), parseFloat(p310.data.p310), parseFloat(p429.data.p));
-   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i305), parseFloat(p310.data.i310), parseFloat(p429.data.i));
-   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v305), parseFloat(p310.data.v310), parseFloat(p429.data.v));
-   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f305), parseFloat(p310.data.f310), parseFloat(p429.data.f));
- 
-   let pUPS = sum(parseFloat(ups2.data.p243), parseFloat(ups2.data.p242), parseFloat(ups3.data.pA), parseFloat(ups3.data.pB), parseFloat(ups5.data.p501), parseFloat(ups5.data.p502));
-   let iUPS = sum(parseFloat(ups2.data.i243), parseFloat(ups2.data.i242), parseFloat(ups3.data.iA), parseFloat(ups3.data.iB), parseFloat(ups5.data.i501), parseFloat(ups5.data.i502));
-   let vUPS = avg(parseFloat(ups2.data.v243), parseFloat(ups2.data.v242), parseFloat(ups3.data.vA), parseFloat(ups3.data.vB), parseFloat(ups5.data.v501), parseFloat(ups5.data.v502));
-   let fUPS = avg(parseFloat(ups2.data.f243), parseFloat(ups2.data.f242), parseFloat(ups3.data.fA), parseFloat(ups3.data.fB), parseFloat(ups5.data.f501), parseFloat(ups5.data.f502));
- 
-   let pIt = sum(pRecti, pUPS);
-   let iIt = sum(iRecti, iUPS);
-   let vIt = avg(vRecti, vUPS);
-   let fIt = avg(fRecti, fUPS);
+  const responses = await Promise.all(urls.map((url) => fetchData(url)));
 
-   let pue = ((parseFloat(lvmdp.data.p)) / pIt).toFixed(2);
- 
-   const d = new Date();
-   let update = d.toLocaleString("sv-SE");
-   
-   // update for real time PUE
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + pue + ", current = 0, voltage = 0, frequency = 0 WHERE id = 1", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time LVMDP
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + lvmdp.data.p + ", current = " + lvmdp.data.i + ", voltage = " + lvmdp.data.v + ", frequency = " + lvmdp.data.f + " WHERE id = 2", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time IT
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + pIt + ", current = " + iIt + ", voltage = " + vIt + ", frequency = " + fIt + " WHERE id = 3", function (err, result) {
-     if (err) console.log(err);
-   });
-   // query for real time Recti
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + pRecti + ", current = " + iRecti + ", voltage = " + vRecti + ", frequency = " + fRecti + " WHERE id = 4", function (err, result) {
-     if (err) console.log(err);
-   });
-   // query for real time UPS
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + pUPS + ", current = " + iUPS + ", voltage = " + vUPS + ", frequency = " + fUPS + " WHERE id = 5", function (err, result) {
-     if (err) console.log(err);
-   });
-   // query for real time panel 2.05
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p205.data.p + ", current = " + p205.data.i + ", voltage = " + p205.data.v + ", frequency = " + p205.data.f + " WHERE id = 6", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time panel 2.36
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p236.data.p + ", current = " + p236.data.i + ", voltage = " + p236.data.v + ", frequency = " + p236.data.f + " WHERE id = 7", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time panel 3.05
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p305.data.p305 + ", current = " + p305.data.i305 + ", voltage = " + p305.data.v305 + ", frequency = " + p305.data.f305 + " WHERE id = 8", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time panel 3.10
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p310.data.p310 + ", current = " + p310.data.i310 + ", voltage = " + p310.data.v310 + ", frequency = " + p310.data.f310 + " WHERE id = 9", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time panel 4.29
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + p429.data.p + ", current = " + p429.data.i + ", voltage = " + p429.data.v + ", frequency = " + p429.data.f + " WHERE id = 10", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 2.02
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups2.data.p242 + ", current = " + ups2.data.i242 + ", voltage = " + ups2.data.v242 + ", frequency = " + ups2.data.f242 + " WHERE id = 11", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 2.03
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups2.data.p243 + ", current = " + ups2.data.i243 + ", voltage = " + ups2.data.v243 + ", frequency = " + ups2.data.f243 + " WHERE id = 12", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 3.01
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups3.data.pA + ", current = " + ups3.data.iA + ", voltage = " + ups3.data.vA + ", frequency = " + ups3.data.fA + " WHERE id = 13", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 3.02
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups3.data.pB + ", current = " + ups3.data.iB + ", voltage = " + ups3.data.vB + ", frequency = " + ups3.data.fB + " WHERE id = 14", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 5.01
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups5.data.p501 + ", current = " + ups5.data.i501 + ", voltage = " + ups5.data.v501 + ", frequency = " + ups5.data.f501 + " WHERE id = 15", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for real time UPS 5.02
-   electric.query("UPDATE real_time SET last_update = '" + update + "', loads = " + ups5.data.p502 + ", current = " + ups5.data.i502 + ", voltage = " + ups5.data.v502 + ", frequency = " + ups5.data.f502 + " WHERE id = 16", function (err, result) {
-      if (err) console.log(err);
-   });
-};
- 
-const saveData = async () => {
-   const lvmdp = await axios.get("http://192.168.10.13/data");
-   
-   const p205 = await axios.get("http://192.168.10.32/data");
-   const p236 = await axios.get("http://192.168.10.33/data");
-   const p305 = await axios.get("http://192.168.10.52/data");
-   const p310 = await axios.get("http://192.168.10.55/data");
-   const p429 = await axios.get("http://192.168.10.75/data");
- 
-   const ups2 = await axios.get("http://192.168.10.34/data");
-   const ups3 = await axios.get("http://192.168.10.53/data");
-   const ups5 = await axios.get("http://192.168.10.92/data");
- 
-   let pRecti = sum(parseFloat(p205.data.p), parseFloat(p236.data.p), parseFloat(p305.data.p305), parseFloat(p310.data.p310), parseFloat(p429.data.p));
-   let iRecti = sum(parseFloat(p205.data.i), parseFloat(p236.data.i), parseFloat(p305.data.i305), parseFloat(p310.data.i310), parseFloat(p429.data.i));
-   let vRecti = avg(parseFloat(p205.data.v), parseFloat(p236.data.v), parseFloat(p305.data.v305), parseFloat(p310.data.v310), parseFloat(p429.data.v));
-   let fRecti = avg(parseFloat(p205.data.f), parseFloat(p236.data.f), parseFloat(p305.data.f305), parseFloat(p310.data.f310), parseFloat(p429.data.f));
- 
-   let pUPS = sum(parseFloat(ups2.data.p243), parseFloat(ups2.data.p242), parseFloat(ups3.data.pA), parseFloat(ups3.data.pB), parseFloat(ups5.data.p501), parseFloat(ups5.data.p502));
-   let iUPS = sum(parseFloat(ups2.data.i243), parseFloat(ups2.data.i242), parseFloat(ups3.data.iA), parseFloat(ups3.data.iB), parseFloat(ups5.data.i501), parseFloat(ups5.data.i502));
-   let vUPS = avg(parseFloat(ups2.data.v243), parseFloat(ups2.data.v242), parseFloat(ups3.data.vA), parseFloat(ups3.data.vB), parseFloat(ups5.data.v501), parseFloat(ups5.data.v502));
-   let fUPS = avg(parseFloat(ups2.data.f243), parseFloat(ups2.data.f242), parseFloat(ups3.data.fA), parseFloat(ups3.data.fB), parseFloat(ups5.data.f501), parseFloat(ups5.data.f502));
- 
-   let pIt = sum(pRecti, pUPS);
-   let iIt = sum(iRecti, iUPS);
-   let vIt = avg(vRecti, vUPS);
-   let fIt = avg(fRecti, fUPS);
+  let fetchFailed = false; // Flag to track if any fetch fails
+  let pSum = 0;
 
-   let facility = ((parseFloat(lvmdp.data.p)) - pIt).toFixed(2);
+  responses.forEach((data, i) => {
+    if (data) {
+      if (i !== 0) { // Skip the first URL for `pSum`
+        if (data.p) {
+          pSum += parseFloat(data.p);
+        } else if (data.pA && data.pB) {
+          pSum += parseFloat(data.pA) + parseFloat(data.pB);
+        }
+      }
+    } else {
+      fetchFailed = true; // Mark failure if any fetch is null
+    }
+  });
 
-   let pue = ((parseFloat(lvmdp.data.p)) / pIt).toFixed(2);
- 
-   const d = new Date();
-   let update = d.toLocaleString("sv-SE");
+  const dataLvmdp = responses[0]; // First URL's data
+  const loadLvmdp = dataLvmdp ? parseFloat(dataLvmdp.p) : 0;
 
-   // query for PUE table
-   electric.query("INSERT INTO pue (updated_at, pue, it, facility) VALUES ('" + update + "'," + pue + "," + pIt + "," + facility + ")", function (err, result) {
-		if (err) console.log(err);
-	});
-   // query for LVMDP table
-   electric.query("INSERT INTO lvmdp (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + lvmdp.data.p + "," + lvmdp.data.v + "," + lvmdp.data.i + "," + lvmdp.data.f + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for IT table
-   electric.query("INSERT INTO it (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + pIt + "," + vIt + "," + iIt + "," + fIt + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Recti table
-   electric.query("INSERT INTO recti (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + pRecti + "," + vRecti + "," + iRecti + "," + fRecti + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS table
-   electric.query("INSERT INTO ups (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + pUPS + "," + vUPS + "," + iUPS + "," + fUPS + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Panel 2.05 table
-   electric.query("INSERT INTO p205 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p205.data.p + "," + p205.data.v + "," + p205.data.i + "," + p205.data.f + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Panel 2.36 table
-   electric.query("INSERT INTO p236 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p236.data.p + "," + p236.data.v + "," + p236.data.i + "," + p236.data.f + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Panel 3.05 table
-   electric.query("INSERT INTO p305 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p305.data.p305+ "," + p305.data.v305+ "," + p305.data.i305+ "," + p305.data.f305+ ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Panel 3.10 table
-   electric.query("INSERT INTO p310 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p310.data.p310 + "," + p310.data.v310 + "," + p310.data.i310 + "," + p310.data.f310 + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for Panel 4.29 table
-   electric.query("INSERT INTO p429 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + p429.data.p + "," + p429.data.v + "," + p429.data.i + "," + p429.data.f + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 2.02 table
-   electric.query("INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups2.data.p242 + "," + ups2.data.v242 + "," + ups2.data.i242 + "," + ups2.data.f242 + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 2.03 table
-   electric.query("INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups2.data.p243 + "," + ups2.data.v243 + "," + ups2.data.i243 + "," + ups2.data.f243 + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 3.01 table
-   electric.query("INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups3.data.pA + "," + ups3.data.vA + "," + ups3.data.iA + "," + ups3.data.fA + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 3.02 table
-   electric.query("INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups3.data.pB + "," + ups3.data.vB + "," + ups3.data.iB + "," + ups3.data.fB + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 5.01 table
-   electric.query("INSERT INTO ups501 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups5.data.p501 + "," + ups5.data.v501 + "," + ups5.data.i501 + "," + ups5.data.f501 + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-   // query for UPS 5.02 table
-   electric.query("INSERT INTO ups502 (updated_at, loads, voltage, current, frequency) VALUES ('" + update + "'," + ups5.data.p502 + "," + ups5.data.v502 + "," + ups5.data.i502 + "," + ups5.data.f502 + ")", function (err, result) {
-      if (err) console.log(err);
-   });
-};
+  const loadIt = pSum || 1; // Avoid division by zero
+  const pue = loadLvmdp / loadIt;
+  const loadFacility = loadLvmdp - loadIt;
 
-module.exports =  { realTimeData, saveData, electric };
+  return { pue, loadLvmdp, loadIt, loadFacility, fetchFailed };
+}
+
+// Function to process IT
+async function calculateIt() {
+  const urls = [
+    "http://192.168.10.32/data",
+    "http://192.168.10.33/data",
+    "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
+    "http://192.168.10.75/data",
+    "http://192.168.10.34/data",
+    // "http://192.168.10.35/data",
+    "http://192.168.10.53/data",
+    // "http://192.168.10.54/data",
+    "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
+  ];
+
+  const responses = await Promise.all(urls.map((url) => fetchData(url)));
+
+  let fetchFailed = false; // Flag to track if any fetch fails
+  let pSum = 0;
+  let iSum = 0;
+  let vSum = 0;
+  let fSum = 0;
+  let count = 0;
+
+  responses.forEach((data, i) => {
+    if (data) {
+      if (data.p) {
+        pSum += parseFloat(data.p);
+        iSum += parseFloat(data.i);
+        vSum += parseFloat(data.v);
+        fSum += parseFloat(data.f);
+        count++;
+      } else if (data.pA && data.pB) {
+        pSum += parseFloat(data.pA) + parseFloat(data.pB);
+        iSum += parseFloat(data.iA) + parseFloat(data.iB);
+        vSum += parseFloat(data.vA) + parseFloat(data.vB);
+        fSum += parseFloat(data.fA) + parseFloat(data.fB);
+        count += 2; // Since we have two sets of data for this address
+      }
+    } else {
+      fetchFailed = true; // Mark failure if any fetch is null
+    }
+  });
+
+  const vAvg = vSum / count;
+  const fAvg = fSum / count;
+
+  return { pSum, iSum, vAvg, fAvg, fetchFailed };
+}
+
+// Function to process Recti
+async function calculateRecti() {
+  const urls = [
+    "http://192.168.10.32/data",
+    "http://192.168.10.33/data",
+    "http://192.168.10.52/data",
+    "http://192.168.10.55/data",
+    "http://192.168.10.75/data",
+  ];
+
+  const responses = await Promise.all(urls.map((url) => fetchData(url)));
+
+  let fetchFailed = false; // Flag to track if any fetch fails
+  let pRecti = 0;
+  let iSum = 0;
+  let vSum = 0;
+  let fSum = 0;
+  let count = 0;
+
+  responses.forEach((data, i) => {
+    if (data) {
+      pRecti += parseFloat(data.p);
+      iSum += parseFloat(data.i);
+      vSum += parseFloat(data.v);
+      fSum += parseFloat(data.f);
+      count++;
+    } else {
+      fetchFailed = true; // Mark failure if any fetch is null
+    }
+  });
+
+  const vAvg = vSum / count;
+  const fAvg = fSum / count;
+
+  return { pRecti, iSum, vAvg, fAvg, fetchFailed };
+}
+
+// Function to process UPS
+async function calculateUps() {
+  const urls = [
+    "http://192.168.10.34/data",
+    // "http://192.168.10.35/data",
+    "http://192.168.10.53/data",
+    // "http://192.168.10.54/data",
+    "http://192.168.10.92/data",
+    "http://192.168.10.93/data",
+  ];
+
+  const responses = await Promise.all(urls.map((url) => fetchData(url)));
+
+  let fetchFailed = false; // Flag to track if any fetch fails
+  let pUps = 0;
+  let iSum = 0;
+  let vSum = 0;
+  let fSum = 0;
+  let count = 0;
+
+  responses.forEach((data, i) => {
+    if (data) {
+      if (data.p) {
+        pUps += parseFloat(data.p);
+        iSum += parseFloat(data.i);
+        vSum += parseFloat(data.v);
+        fSum += parseFloat(data.f);
+        count++;
+      } else if (data.pA && data.pB) {
+        pUps += parseFloat(data.pA) + parseFloat(data.pB);
+        iSum += parseFloat(data.iA) + parseFloat(data.iB);
+        vSum += parseFloat(data.vA) + parseFloat(data.vB);
+        fSum += parseFloat(data.fA) + parseFloat(data.fB);
+        count += 2; // Since we have two sets of data for this address
+      }
+    } else {
+      fetchFailed = true; // Mark failure if any fetch is null
+    }
+  });
+
+  const vAvg = vSum / count;
+  const fAvg = fSum / count;
+
+  return { pUps, iSum, vAvg, fAvg };
+}
+
+// Save pue data
+async function savePue() {
+  const { pue, loadLvmdp, loadIt, loadFacility } = await calculatePue();
+  const { pRecti } = await calculateRecti;
+  const { pUps } = await calculateUps;
+  const datetime = getDate();
+  const sql = `INSERT INTO pue (updated_at, pue, lvmdp, recti, ups, it, facility) VALUES (?, ?, ?, ?. ?, ?, ?)`;
+  electric.query(sql, [datetime, pue, loadLvmdp, pRecti, pUps, loadIt, loadFacility], (err) => {
+    if (err) {
+      console.error("Error inserting into PUE table:", err);
+    }
+  });
+}
+
+// Save IT data
+async function saveIt() {
+  const { pSum, iSum, vAvg, fAvg } = await calculateIt();
+  const datetime = getDate();
+  const sql = `INSERT INTO it (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+  electric.query(sql, [datetime, pSum, vAvg, iSum, fAvg], (err) => {
+    if (err) {
+      console.error("Error inserting into IT table:", err);
+    }
+  });
+}
+
+// Save recti data
+async function saveRecti() {
+  const { pRecti, iSum, vAvg, fAvg } = await calculateRecti();
+  const datetime = getDate();
+  const sql = `INSERT INTO recti (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+  electric.query(sql, [datetime, pRecti, vAvg, iSum, fAvg], (err) => {
+    if (err) {
+      console.error("Error inserting into Recti table:", err);
+    }
+  });
+}
+
+// Save UPS data
+async function saveUps() {
+  const { pUps, iSum, vAvg, fAvg } = await calculateUps();
+  const datetime = getDate();
+  const sql = `INSERT INTO ups (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+  electric.query(sql, [datetime, pUps, vAvg, iSum, fAvg], (err) => {
+    if (err) {
+      console.error("Error inserting into UPS table:", err);
+    }
+  });
+}
+
+async function saveData(url, name) {
+  const data = await fetchData(url);
+  if (data) {
+    const datetime = getDate();
+    const sql = `INSERT INTO ${name} (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
+      if (err) {
+        console.error(`Error inserting into ${name}:`, err);
+      }
+    });
+  }
+}
+
+// Save data for ups2.02
+async function saveUps202() {
+  const data = await fetchData("http://192.168.10.34/data");
+  if (data) {
+    const datetime = getDate();
+    const sql = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
+      if (err) {
+        console.error("Error inserting into UPS 2.02 table:", err);
+      }
+    });
+  }
+}
+
+// Save data for ups2.03
+async function saveUps203() {
+  const data = await fetchData("http://192.168.10.34/data");
+  if (data) {
+    const datetime = getDate();
+    const sql = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
+      if (err) {
+        console.error("Error inserting into UPS 2.03 table:", err);
+      }
+    });
+  }
+}
+
+// Save data for ups3.01
+async function saveUps301() {
+  const data = await fetchData("http://192.168.10.53/data");
+  if (data) {
+    const datetime = getDate();
+    const sql = `INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
+      if (err) {
+        console.error("Error inserting into UPS 3.01 table:", err);
+      }
+    });
+  }
+}
+
+// Save data for ups3.02
+async function saveUps302() {
+  const data = await fetchData("http://192.168.10.53/data");
+  if (data) {
+    const datetime = getDate();
+    const sql = `INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
+      if (err) {
+        console.error("Error inserting into UPS 3.02 table:", err);
+      }
+    });
+  }
+}
+
+// Real Time pue
+async function updatePue() {
+  const { pue, fetchFailed } = await calculatePue();
+  const datetime = getDate();
+  const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
+  const sql = `UPDATE per_second SET last_update = ?, loads = ?, current = 0, voltage = 0, frequency = 0, status = ? WHERE id = 1`;
+  electric.query(sql, [datetime, pue, status]);
+}
+
+const sql = `UPDATE per_second SET last_update = ?, loads = ?, current = ?, voltage = ?, frequency = ?, status = ? WHERE id = ?`;
+const sql2 = `UPDATE per_second SET status = ? WHERE id = ?`
+
+async function updateData(url, id) {
+  const data = await fetchData(url);
+  if (data) {
+    const datetime = getDate();
+    electric.query(sql, [datetime, data.p, data.i, data.v, data.f, "C", id]);
+  } else {
+    electric.query(sql2, ["D", id]);
+  }
+}
+
+// Real Time IT
+async function updateIt() {
+  const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateIt();
+  const datetime = getDate();
+  const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
+  electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 3]);
+}
+
+// Real Time recti
+async function updateRecti() {
+  const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateRecti();
+  const datetime = getDate();
+  const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
+  electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 4]);
+}
+
+// Real Time UPS
+async function updateUps() {
+  const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateUps();
+  const datetime = getDate();
+  const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
+  electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 5]);
+}
+
+// Real Time UPS 2.02
+async function updateUps202() {
+  const data = await fetchData("http://192.168.10.34/data");
+  if (data) {
+    const datetime = getDate();
+    electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 11]);
+  } else {
+    electric.query(sql2, ["D", 11]);
+  }
+}
+
+// Real Time UPS 2.03
+async function updateUps203() {
+  const data = await fetchData("http://192.168.10.34/data");
+  if (data) {
+    const datetime = getDate();
+    electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 12]);
+  } else {
+    electric.query(sql2, ["D", 12]);
+  }
+}
+
+// Real Time UPS 3.01
+async function updateUps301() {
+  const data = await fetchData("http://192.168.10.53/data");
+  if (data) {
+    const datetime = getDate();
+    electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 13]);
+  } else {
+    electric.query(sql2, ["D", 13]);
+  }
+}
+
+// Real Time UPS 3.02
+async function updateUps302() {
+  const data = await fetchData("http://192.168.10.53/data");
+  if (data) {
+    const datetime = getDate();
+    electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 14]);
+  } else {
+    electric.query(sql2, ["D", 14]);
+  }
+}
+
+// Save all data simultaneously
+async function saveElecData() {
+  await savePue();
+  await saveData("http://192.168.10.13/data", "lvmdp");
+  await saveIt();
+  await saveRecti();
+  await saveUps();
+  await saveData("http://192.168.10.32/data", "p205");
+  await saveData("http://192.168.10.33/data", "p236");
+  await saveData("http://192.168.10.55/data", "p310");
+  await saveData("http://192.168.10.52/data", "p305");
+  await saveData("http://192.168.10.75/data", "p429");
+  await saveUps202();
+  await saveUps203();
+  await saveUps301();
+  await saveUps302();
+  await saveData("http://192.168.10.92/data", "ups501");
+  await saveData("http://192.168.10.93/data", "ups502");
+}
+
+async function updateElecData() {
+  await updatePue();
+  await updateData("http://192.168.10.13/data", 2);
+  await updateIt();
+  await updateRecti();
+  await updateUps();
+  await updateData("http://192.168.10.32/data", 6);
+  await updateData("http://192.168.10.33/data", 7);
+  await updateData("http://192.168.10.52/data", 8);
+  await updateData("http://192.168.10.55/data", 9);
+  await updateData("http://192.168.10.75/data", 10);
+  await updateUps202();
+  await updateUps203();
+  await updateUps301();
+  await updateUps302();
+  await updateData("http://192.168.10.92/data", 15);
+  await updateData("http://192.168.10.93/data", 16);
+}
+
+module.exports = { electric, saveElecData, updateElecData };

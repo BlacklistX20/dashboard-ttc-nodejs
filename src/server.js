@@ -1,18 +1,15 @@
-const { realTimeData, saveData, electric } = require('./electric');
-const { lantai4RealTimeData, lantai4SaveData, temp } = require('./temp');
-const { fuel, fuelSaveData } = require('./fuel');
-const { conn, saveAllData, saveRealTimeData } = require('./test');
-
+const { temp, electric, fuel } = require('./dbConn');
+const { saveElecData, updateElecData } = require('./electric');
+const { saveLt2, updateLt2 } = require('./temp2');
+const { saveLt3, updateLt3 } = require('./temp3');
+const { saveLt4, updateLt4 } = require('./temp4');
+const { saveLt5, updateLt5 } = require('./temp5');
+const { saveDaily, updateDaily } = require('./fuel');
 
 electric.connect(function (err) {
   if (err) throw err;
   console.log("Electric Database connected!");
 });
-
-// conn.connect(function (err) {
-//   if (err) throw err;
-//   console.log("Database Connected!");
-// });
 
 temp.connect(function (err) {
   if (err) throw err;
@@ -25,13 +22,18 @@ fuel.connect(function (err) {
 });
 
 setInterval(() => {
-  realTimeData();
-  // saveRealTimeData();
-  lantai4RealTimeData();
+  updateElecData();
+  updateLt2();
+  updateLt3();
+  updateLt4();
+  updateLt5();
+  updateDaily();
 }, 1000);
 setInterval(() => {
-  saveData();
-  // saveAllData();
-  lantai4SaveData();
+  saveElecData();
+  saveLt2();
+  saveLt3();
+  saveLt4();
+  saveLt5();
 }, 300000);
-setInterval(fuelSaveData, 1800000)
+setInterval(saveDaily, 1800000)

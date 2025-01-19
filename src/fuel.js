@@ -1,58 +1,62 @@
 const axios = require("axios");
 const mysql = require("mysql");
+const { fetchData, getDate} = require('./func');
+const { fuel } = require('./dbConn');
 
-var fuel = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "fuel",
-});
-
-const fuelSaveData = async () => {
-  const d = new Date();
-  let update = d.toLocaleString("sv-SE");
-
-  try {
-    const daily = await axios.get("http://192.168.10.11/data");
-    fuel.query(
-      "INSERT INTO daily (updated_at, tank1, tank2) VALUES ('" +
-        update +
-        "'," +
-        daily.data.th1 +
-        "," +
-        daily.data.th2 +
-        ")",
-      function (err, result) {
-        if (err) console.log(err);
+async function saveDaily() {
+  const data = await fetchData("http://192.168.10.11/data");
+  if (data instanceof Error) {
+    console.error(`Error Tangki Harian : ${data.message}`);
+    console.error(`Error Details :`, { errno: err.errno, code: err.code });
+  } else {
+    const datetime = getDate();
+    const sql = `INSERT INTO daily (updated_at, tank1, tank2, status) VALUES (?, ?, ?, ?)`;
+    fuel.query(sql, [datetime, data.th1, data.th2, "C"], (err) => {
+      if (err) {
+        console.error("Error Database Tangki Harian :", err);
       }
-    );
-  } catch (error) {
-    console.log(error.message + " : Tangki Harian");
+    });
   }
-  // try {
-  //   const monthly = await axios.get("http://192.168.10.11/data");
-  //   fuel.query(
-  //     "INSERT INTO monthly (updated_at, tank1, tank2, tank3) VALUES ('" +
-  //       update +
-  //       "'," +
-  //       monthly.data.t1 +
-  //       "," +
-  //       monthly.data.t2 +
-  //       "," +
-  //       monthly.data.t3 +
-  //       ")",
-  //     function (err, result) {
-  //       if (err) console.log(err);
-  //     }
-  //   );
-  // } catch (error) {
-  //   fuel.query(
-  //     "INSERT INTO monthly (updated_at, tank1, tank2, tank3) VALUES ('" + update +"', 0, 0, 0)",
-  //     function (err, result) {
-  //       if (err) console.log(err);
-  //     }
-  //   );
-  // }
-};
+}
 
-module.exports = { fuel, fuelSaveData };
+async function saveMonthly() {
+  const data = await fetchData("http://192.168.10.12/data");
+  if (data instanceof Error) {
+    console.error(`Error Tangki Bulanan : ${data.message}`);
+    console.error(`Error Details :`, { errno: err.errno, code: err.code });
+  } else {
+    const datetime = getDate();
+    const sql = `INSERT INTO monthly (updated_at, tank1, tank2, tank3, status) VALUES (?, ?, ?, ?, ?)`;
+    fuel.query(sql, [datetime, data.th1, data.th2, data.th3, "C"], (err) => {
+      if (err) {
+        console.error("Error Database Tangki Bulanan :", err);
+      }
+    });
+  }
+}
+
+async function updateDaily() {
+  const data = await fetchData("http://192.168.10.11/data");
+  if (data instanceof Error) {
+    const sql = `UPDATE daily SET status = ? WHERE id = 1`;
+    fuel.query(sql, ["D"]);
+  } else {
+    const datetime = getDate();
+    const sql = `UPDATE daily SET updated_at = ?, tank1 = ?, tank2 = ?, status = ? WHERE id = 1`;
+    fuel.query(sql, [datetime, data.th1, data.th2, "C"]);
+  }
+}
+
+async function updateMonthly() {
+  const data = await fetchData("http://192.168.10.11/data");
+  if (data instanceof Error) {
+    const sql = `UPDATE monthly SET status = ? WHERE id = 1`;
+    fuel.query(sql, ["D"]);
+  } else {
+    const datetime = getDate();
+    const sql = `UPDATE monthly SET updated_at = ?, tank1 = ?, tank2 = ?, tank3 = ?, status = ? WHERE id = 1`;
+    fuel.query(sql, [datetime, data.th1, data.th2, data.th3, "C"]);
+  }
+}
+
+module.exports = { saveDaily, updateDaily };

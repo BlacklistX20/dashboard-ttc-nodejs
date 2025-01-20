@@ -361,18 +361,18 @@ async function updateIt() {
 
 // Real Time recti
 async function updateRecti() {
-  const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateRecti();
+  const { pRecti, iSum, vAvg, fAvg, fetchFailed } = await calculateRecti();
   const datetime = getDate();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
-  electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 4]);
+  electric.query(sql, [datetime, pRecti, iSum, vAvg, fAvg, status, 4]);
 }
 
 // Real Time UPS
 async function updateUps() {
-  const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateUps();
+  const { pUps, iSum, vAvg, fAvg, fetchFailed } = await calculateUps();
   const datetime = getDate();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
-  electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 5]);
+  electric.query(sql, [datetime, pUps, iSum, vAvg, fAvg, status, 5]);
 }
 
 // Real Time UPS 2.02

@@ -8,7 +8,7 @@ async function fetchData(url) {
     const response = await axios.get(url);
     return response.data;
   } catch (err) {
-    return err;
+    return null;
   }
 }
 
@@ -31,11 +31,13 @@ async function updateTempData(url, id) {
   const sqlConnect = `UPDATE per_second SET last_update = ?, temp = ?, hum = ?, status = ? WHERE id = ?`;
   const sqlDisconnect = `UPDATE per_second SET status = ? WHERE id = ?`;
   const data = await fetchData(url);
-  if (data instanceof Error) {
-    temp.query(sqlDisconnect, ["D", id]);
-  } else {
+  if (data) {
     const datetime = getDate();
-    temp.query(sqlConnect, [datetime, data.sAvg, data.kAvg, "C", id]);
+    const tempValue = data.sAvg ?? 0; // Nullish coalescing operator
+    const humValue = data.kAvg ?? 0;
+    temp.query(sqlConnect, [datetime, tempValue, humValue, "C", id]);
+  } else {
+    temp.query(sqlDisconnect, ["D", id]);
   }
 }
 

@@ -1,6 +1,7 @@
 const axios = require("axios");
 const mysql = require("mysql");
 const { fetchData, getDate, updateTempData } = require('./func');
+const { temp } = require('./dbConn');
 
 async function saveBatt4() {
   const data = await fetchData("http://192.168.10.72/data");
@@ -9,7 +10,7 @@ async function saveBatt4() {
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
-    const sql = `INSERT INTO battery4 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO battery.4 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Baterai Lantai 4 :", err);
@@ -25,7 +26,7 @@ async function saveRecti4() {
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
-    const sql = `INSERT INTO recti4 (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO recti.4 (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Recti Lantai 4 :", err);
@@ -41,7 +42,7 @@ async function saveBss() {
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
-    const sql = `INSERT INTO bss (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO bss.4 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database BSS Lantai 4 :", err);
@@ -57,7 +58,7 @@ async function saveInter() {
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
-    const sql = `INSERT INTO inter (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO interkoneksi.4 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Interkoneksi Lantai 4 :", err);
@@ -73,7 +74,7 @@ async function saveTrans() {
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
-    const sql = `INSERT INTO trans (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO transmisi.4 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.s5, data.k5, data.s6, data.k6, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Transmisi Lantai 4 :", err);

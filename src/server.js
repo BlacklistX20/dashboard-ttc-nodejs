@@ -23,17 +23,17 @@ fuel.connect(function (err) {
 
 setInterval(() => {
   updateElecData();
-  //updateLt2();
-  //updateLt3();
+  updateLt2();
+  updateLt3();
   updateLt4();
-  //updateLt5();
+  updateLt5();
   updateDaily();
 }, 1000);
 setInterval(() => {
   saveElecData();
-  //saveLt2();
-  //saveLt3();
+  saveLt2();
+  saveLt3();
   saveLt4();
-  //saveLt5();
+  saveLt5();
 }, 300000);
 setInterval(saveDaily, 1800000)

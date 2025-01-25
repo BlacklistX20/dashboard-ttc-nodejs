@@ -4,7 +4,7 @@ const { fetchData, getDate} = require('./func');
 const { fuel } = require('./dbConn');
 
 async function saveDaily() {
-  const data = await fetchData("http://192.168.10.11/data");
+  const data = await fetchData("http://192.168.10.15/data");
   if (data) {
     const datetime = getDate();
     const sql = `INSERT INTO daily (updated_at, tank1, tank2, status) VALUES (?, ?, ?, ?)`;
@@ -20,7 +20,7 @@ async function saveDaily() {
 }
 
 async function saveMonthly() {
-  const data = await fetchData("http://192.168.10.12/data");
+  const data = await fetchData("http://192.168.10.14/data");
   if (data) {
     const datetime = getDate();
     const sql = `INSERT INTO monthly (updated_at, tank1, tank2, tank3, status) VALUES (?, ?, ?, ?, ?)`;
@@ -36,7 +36,7 @@ async function saveMonthly() {
 }
 
 async function updateDaily() {
-  const data = await fetchData("http://192.168.10.11/data");
+  const data = await fetchData("http://192.168.10.15/data");
   if (data) {
     const datetime = getDate();
     const sql = `UPDATE daily SET updated_at = ?, tank1 = ?, tank2 = ?, status = ? WHERE id = 1`;
@@ -48,7 +48,7 @@ async function updateDaily() {
 }
 
 async function updateMonthly() {
-  const data = await fetchData("http://192.168.10.11/data");
+  const data = await fetchData("http://192.168.10.14/data");
   if (data) {
     const datetime = getDate();
     const sql = `UPDATE monthly SET updated_at = ?, tank1 = ?, tank2 = ?, tank3 = ?, status = ? WHERE id = 1`;

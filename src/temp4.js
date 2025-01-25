@@ -4,7 +4,7 @@ const { fetchData, getDate, updateTempData } = require('./func');
 const { temp } = require('./dbConn');
 
 async function saveBatt4() {
-  const data = await fetchData("http://192.168.10.72/data");
+  const data = await fetchData("http://192.168.10.40/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Baterai Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
@@ -20,7 +20,7 @@ async function saveBatt4() {
 }
 
 async function saveRecti4() {
-  const data = await fetchData("http://192.168.10.78/data");
+  const data = await fetchData("http://192.168.10.41/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Recti Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
@@ -36,7 +36,7 @@ async function saveRecti4() {
 }
 
 async function saveBss() {
-  const data = await fetchData("http://192.168.10.73/data");
+  const data = await fetchData("http://192.168.10.42/data");
   if (data instanceof Error) {
     console.error(`Error Ruang BSS Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
@@ -52,7 +52,7 @@ async function saveBss() {
 }
 
 async function saveInter() {
-  const data = await fetchData("http://192.168.10.76/data");
+  const data = await fetchData("http://192.168.10.43/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Interkoneksi Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
@@ -68,7 +68,7 @@ async function saveInter() {
 }
 
 async function saveTrans() {
-  const data = await fetchData("http://192.168.10.77/data");
+  const data = await fetchData("http://192.168.10.44/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Transmisi Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
@@ -92,11 +92,11 @@ async function saveLt4() {
 }
 
 async function updateLt4() {
-  await updateTempData("http://192.168.10.72/data", 11);
-  await updateTempData("http://192.168.10.78/data", 12);
-  await updateTempData("http://192.168.10.73/data", 13);
-  await updateTempData("http://192.168.10.76/data", 14);
-  await updateTempData("http://192.168.10.77/data", 15);
+  await updateTempData("http://192.168.10.40/data", 11);
+  await updateTempData("http://192.168.10.41/data", 12);
+  await updateTempData("http://192.168.10.42/data", 13);
+  await updateTempData("http://192.168.10.43/data", 14);
+  await updateTempData("http://192.168.10.44/data", 15);
 }
 
 module.exports = { saveLt4, updateLt4 };

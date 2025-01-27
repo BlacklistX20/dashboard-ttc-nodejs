@@ -15,7 +15,7 @@ async function fetchData(url) {
 async function saveUtilityA() {
   const data = await fetchData("http://192.168.10.50/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Utility A Lantai 5 : ${data.message}`);
+    console.error(`Error Ruang Utility A Lantai 5 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -31,7 +31,7 @@ async function saveUtilityA() {
 async function saveUtilityB() {
   const data = await fetchData("http://192.168.10.51/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Utility B Lantai 5 : ${data.message}`);
+    console.error(`Error Ruang Utility B Lantai 5 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -47,7 +47,7 @@ async function saveUtilityB() {
 async function saveDataCenter() {
   const data = await fetchData("http://192.168.10.52/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Data Center Lantai 5 : ${data.message}`);
+    console.error(`Error Ruang Data Center Lantai 5 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -63,7 +63,7 @@ async function saveDataCenter() {
 async function savePengembangan() {
   const data = await fetchData("http://192.168.10.53/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Pengembangan Lantai 5 : ${data.message}`);
+    console.error(`Error Ruang Pengembangan Lantai 5 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -79,7 +79,7 @@ async function savePengembangan() {
 async function saveContainment() {
   const data = await fetchData("http://192.168.10.54/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Containment Lantai 5 : ${data.message}`);
+    console.error(`Error Ruang Containment Lantai 5 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();

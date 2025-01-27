@@ -15,7 +15,7 @@ async function fetchData(url) {
 async function saveBatt4() {
   const data = await fetchData("http://192.168.10.40/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Baterai Lantai 4 : ${data.message}`);
+    console.error(`Error Ruang Baterai Lantai 4 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -31,7 +31,7 @@ async function saveBatt4() {
 async function saveRecti4() {
   const data = await fetchData("http://192.168.10.41/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Recti Lantai 4 : ${data.message}`);
+    console.error(`Error Ruang Recti Lantai 4 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -47,7 +47,7 @@ async function saveRecti4() {
 async function saveBss() {
   const data = await fetchData("http://192.168.10.42/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang BSS Lantai 4 : ${data.message}`);
+    console.error(`Error Ruang BSS Lantai 4 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -63,7 +63,7 @@ async function saveBss() {
 async function saveInter() {
   const data = await fetchData("http://192.168.10.43/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Interkoneksi Lantai 4 : ${data.message}`);
+    console.error(`Error Ruang Interkoneksi Lantai 4 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -79,7 +79,7 @@ async function saveInter() {
 async function saveTrans() {
   const data = await fetchData("http://192.168.10.44/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Transmisi Lantai 4 : ${data.message}`);
+    console.error(`Error Ruang Transmisi Lantai 4 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();

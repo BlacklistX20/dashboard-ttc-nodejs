@@ -15,7 +15,7 @@ async function fetchData(url) {
 async function saveBatt3() {
   const data = await fetchData("http://192.168.10.30/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Baterai Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang Baterai Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -31,7 +31,7 @@ async function saveBatt3() {
 async function saveRecti3() {
   const data = await fetchData("http://192.168.10.31/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Recti Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang Recti Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -47,7 +47,7 @@ async function saveRecti3() {
 async function saveMkios() {
   const data = await fetchData("http://192.168.10.34/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang MKIOS Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang MKIOS Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -63,7 +63,7 @@ async function saveMkios() {
 async function saveOcs() {
   const data = await fetchData("http://192.168.10.35/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang OCS Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang OCS Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -79,7 +79,7 @@ async function saveOcs() {
 async function saveCore() {
   const data = await fetchData("http://192.168.10.33/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Core Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang Core Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -95,7 +95,7 @@ async function saveCore() {
 async function saveInvas() {
   const data = await fetchData("http://192.168.10.32/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang INVAS Lantai 3 : ${data.message}`);
+    console.error(`Error Ruang INVAS Lantai 3 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();

@@ -15,7 +15,7 @@ async function fetchData(url) {
 async function saveBatt2() {
   const data = await fetchData("http://192.168.10.20/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Baterai Lantai 2 : ${data.message}`);
+    console.error(`Error Ruang Baterai Lantai 2 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -31,7 +31,7 @@ async function saveBatt2() {
 async function saveRecti2() {
   const data = await fetchData("http://192.168.10.21/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Recti Lantai 2 : ${data.message}`);
+    console.error(`Error Ruang Recti Lantai 2 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -47,7 +47,7 @@ async function saveRecti2() {
 async function saveTrafo() {
   const data = await fetchData("http://192.168.10.12/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Trafo : ${data.message}`);
+    console.error(`Error Ruang Trafo : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -63,7 +63,7 @@ async function saveTrafo() {
 async function saveGenset() {
   const data = await fetchData("http://192.168.10.13/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang Genset : ${data.message}`);
+    console.error(`Error Ruang Genset : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -79,7 +79,7 @@ async function saveGenset() {
 async function saveCsps() {
   const data = await fetchData("http://192.168.10.23/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang CSPS Lantai 2 : ${data.message}`);
+    console.error(`Error Ruang CSPS Lantai 2 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();
@@ -95,7 +95,7 @@ async function saveCsps() {
 async function saveMsc() {
   const data = await fetchData("http://192.168.10.22/data");
   if (data instanceof Error) {
-    console.error(`Error Ruang MSC Lantai 2 : ${data.message}`);
+    console.error(`Error Ruang MSC Lantai 2 : ${err.message}`);
     console.error(`Error Details:`, { errno: err.errno, code: err.code });
   } else {
     const datetime = getDate();

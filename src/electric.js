@@ -35,18 +35,18 @@ function getDate() {
 // Function to process PUE
 async function calculatePue() {
   const urls = [
-    "http://192.168.10.11/data", // lvmdp
+    "http://192.168.10.13/data", // lvmdp
     "http://192.168.10.25/data", // 2.05
     "http://192.168.10.24/data", // 2.36
     "http://192.168.10.36/data", // 3.05
     "http://192.168.10.37/data", // 3.10
     "http://192.168.10.45/data", // 4.29
-    "http://192.168.10.27/data", // ups 2.02
-    // "http://192.168.10.26/data", // ups 2.03
+    "http://192.168.10.26/data", // ups 2.03
+    // "http://192.168.10.27/data", // ups 2.02
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.56/data", // ups 5B
+    "http://192.168.10.93/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -86,12 +86,12 @@ async function calculateIt() {
     "http://192.168.10.36/data", // 3.05
     "http://192.168.10.37/data", // 3.10
     "http://192.168.10.45/data", // 4.29
-    "http://192.168.10.27/data", // ups 2.02
-    // "http://192.168.10.26/data", // ups 2.03
+    "http://192.168.10.26/data", // ups 2.03
+    // "http://192.168.10.27/data", // ups 2.02
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.56/data", // ups 5B
+    "http://192.168.10.93/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -169,12 +169,12 @@ async function calculateRecti() {
 // Function to process UPS
 async function calculateUps() {
   const urls = [
-    "http://192.168.10.27/data", // ups 2.02
-    // "http://192.168.10.26/data", // ups 2.03
+    "http://192.168.10.26/data", // ups 2.03
+    // "http://192.168.10.27/data", // ups 2.02
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.56/data", // ups 5B
+    "http://192.168.10.93/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -277,7 +277,7 @@ async function saveData(url, name) {
 
 // Save data for ups2.02
 async function saveUps202() {
-  const data = await fetchData("http://192.168.10.27/data");
+  const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
     const sql = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
@@ -291,7 +291,7 @@ async function saveUps202() {
 
 // Save data for ups2.03
 async function saveUps203() {
-  const data = await fetchData("http://192.168.10.27/data");
+  const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
     const sql = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
@@ -379,7 +379,7 @@ async function updateUps() {
 
 // Real Time UPS 2.02
 async function updateUps202() {
-  const data = await fetchData("http://192.168.10.27/data");
+  const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
     electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 11]);
@@ -390,7 +390,7 @@ async function updateUps202() {
 
 // Real Time UPS 2.03
 async function updateUps203() {
-  const data = await fetchData("http://192.168.10.27/data");
+  const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
     electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 12]);
@@ -424,7 +424,7 @@ async function updateUps302() {
 // Save all data simultaneously
 async function saveElecData() {
   await savePue();
-  await saveData("http://192.168.10.11/data", "lvmdp");
+  await saveData("http://192.168.10.13/data", "lvmdp");
   await saveIt();
   await saveRecti();
   await saveUps();
@@ -438,12 +438,12 @@ async function saveElecData() {
   await saveUps301();
   await saveUps302();
   await saveData("http://192.168.10.55/data", "ups501");
-  await saveData("http://192.168.10.56/data", "ups502");
+  await saveData("http://192.168.10.93/data", "ups502");
 }
 
 async function updateElecData() {
   await updatePue();
-  await updateData("http://192.168.10.11/data", 2);
+  await updateData("http://192.168.10.13/data", 2);
   await updateIt();
   await updateRecti();
   await updateUps();
@@ -457,7 +457,7 @@ async function updateElecData() {
   await updateUps301();
   await updateUps302();
   await updateData("http://192.168.10.55/data", 15);
-  await updateData("http://192.168.10.56/data", 16);
+  await updateData("http://192.168.10.93/data", 16);
 }
 
 module.exports = { electric, saveElecData, updateElecData };

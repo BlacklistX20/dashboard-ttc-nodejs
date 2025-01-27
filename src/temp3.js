@@ -1,6 +1,16 @@
 const axios = require("axios");
 const mysql = require("mysql");
-const { fetchData, getDate, updateTempData } = require('./func');
+const { getDate, updateTempData } = require('./func');
+const { temp } = require('./dbConn');
+
+async function fetchData(url) {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (err) {
+    return err;
+  }
+}
 
 async function saveBatt3() {
   const data = await fetchData("http://192.168.10.30/data");

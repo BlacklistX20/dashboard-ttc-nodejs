@@ -46,7 +46,7 @@ async function calculatePue() {
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.93/data", // ups 5B
+    "http://192.168.10.56/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -91,7 +91,7 @@ async function calculateIt() {
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.93/data", // ups 5B
+    "http://192.168.10.56/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -174,7 +174,7 @@ async function calculateUps() {
     "http://192.168.10.38/data", // ups 3.01
     // "http://192.168.10.39/data", // ups 3.02
     "http://192.168.10.55/data", // ups 5A
-    "http://192.168.10.93/data", // ups 5B
+    "http://192.168.10.56/data", // ups 5B
   ];
 
   const responses = await Promise.all(urls.map((url) => fetchData(url)));
@@ -218,10 +218,12 @@ async function savePue() {
   const { pRecti } = await calculateRecti;
   const { pUps } = await calculateUps;
   const datetime = getDate();
-  const sql = `INSERT INTO pue (updated_at, pue, lvmdp, recti, ups, it, facility) VALUES (?, ?, ?, ?. ?, ?, ?)`;
-  electric.query(sql, [datetime, pue, loadLvmdp, pRecti, pUps, loadIt, loadFacility], (err) => {
+  const loadRecti = pRecti ?? 0;
+  const loadUps = pUps ?? 0;
+  const sql = `INSERT INTO pue (updated_at, pue, lvmdp, recti, ups, it, facility) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  electric.query(sql, [datetime, pue, loadLvmdp, loadRecti, loadUps, loadIt, loadFacility], (err) => {
     if (err) {
-      console.error("Error inserting into PUE table:", err);
+      console.error("Error inserting into PUE table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
     }
   });
 }
@@ -233,7 +235,7 @@ async function saveIt() {
   const sql = `INSERT INTO it (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pSum, vAvg, iSum, fAvg], (err) => {
     if (err) {
-      console.error("Error inserting into IT table:", err);
+      console.error("Error inserting into IT table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
     }
   });
 }
@@ -245,7 +247,7 @@ async function saveRecti() {
   const sql = `INSERT INTO recti (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pRecti, vAvg, iSum, fAvg], (err) => {
     if (err) {
-      console.error("Error inserting into Recti table:", err);
+      console.error("Error inserting into Recti table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
     }
   });
 }
@@ -257,7 +259,7 @@ async function saveUps() {
   const sql = `INSERT INTO ups (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pUps, vAvg, iSum, fAvg], (err) => {
     if (err) {
-      console.error("Error inserting into UPS table:", err);
+      console.error("Error inserting into UPS table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
     }
   });
 }
@@ -269,7 +271,7 @@ async function saveData(url, name) {
     const sql = `INSERT INTO ${name} (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
-        console.error(`Error inserting into ${name}:`, err);
+        console.error(`Error inserting into ${name}:`, { errno: err.errno, code: err.code, message: err.sqlMessage });
       }
     });
   }
@@ -283,7 +285,7 @@ async function saveUps202() {
     const sql = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
       if (err) {
-        console.error("Error inserting into UPS 2.02 table:", err);
+        console.error("Error inserting into UPS 2.02 table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
       }
     });
   }
@@ -297,7 +299,7 @@ async function saveUps203() {
     const sql = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
       if (err) {
-        console.error("Error inserting into UPS 2.03 table:", err);
+        console.error("Error inserting into UPS 2.03 table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
       }
     });
   }
@@ -311,7 +313,7 @@ async function saveUps301() {
     const sql = `INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
       if (err) {
-        console.error("Error inserting into UPS 3.01 table:", err);
+        console.error("Error inserting into UPS 3.01 table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
       }
     });
   }
@@ -325,7 +327,7 @@ async function saveUps302() {
     const sql = `INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
       if (err) {
-        console.error("Error inserting into UPS 3.02 table:", err);
+        console.error("Error inserting into UPS 3.02 table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
       }
     });
   }
@@ -438,7 +440,7 @@ async function saveElecData() {
   await saveUps301();
   await saveUps302();
   await saveData("http://192.168.10.55/data", "ups501");
-  await saveData("http://192.168.10.93/data", "ups502");
+  await saveData("http://192.168.10.56/data", "ups502");
 }
 
 async function updateElecData() {
@@ -457,7 +459,7 @@ async function updateElecData() {
   await updateUps301();
   await updateUps302();
   await updateData("http://192.168.10.55/data", 15);
-  await updateData("http://192.168.10.93/data", 16);
+  await updateData("http://192.168.10.56/data", 16);
 }
 
 module.exports = { electric, saveElecData, updateElecData };

@@ -19,7 +19,7 @@ async function saveUtilityA() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `utility_a.5` (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO utility_a5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Utility A Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -35,7 +35,7 @@ async function saveUtilityB() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `utility_b.5` (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO utility_b5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Utility B Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -51,7 +51,7 @@ async function saveDataCenter() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `dc.5` (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO data_center5 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.s5, data.k5, data.s6, data.k6, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Data Center Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -67,7 +67,7 @@ async function savePengembangan() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `pengembangan.5` (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO pengembangan5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Pengembangan Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -83,7 +83,7 @@ async function saveContainment() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `containment.5` (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO containment5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Containment Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });

@@ -19,7 +19,7 @@ async function saveBatt2() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `battery.2` (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO battery2 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Baterai Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -35,7 +35,7 @@ async function saveRecti2() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `recti.2` (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO recti2 (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database Recti Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -83,7 +83,7 @@ async function saveCsps() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `csps.2` (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO csps2 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database CSPS Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
@@ -99,7 +99,7 @@ async function saveMsc() {
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
   } else {
     const datetime = getDate();
-    const sql = 'INSERT INTO `msc.2` (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const sql = `INSERT INTO msc2 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     temp.query(sql, [datetime, data.s1, data.k1, data.s2, data.k2, data.s3, data.k3, data.s4, data.k4, data.s5, data.k5, data.s6, data.k6, data.sAvg, data.kAvg], (err) => {
       if (err) {
         console.error("Error Database MSC Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });

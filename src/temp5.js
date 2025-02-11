@@ -13,7 +13,7 @@ async function fetchData(url) {
 }
 
 async function saveUtilityA() {
-  const data = await fetchData("http://192.168.10.50/data");
+  const data = await fetchData("http://192.168.10.51/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Utility A Lantai 5 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -29,7 +29,7 @@ async function saveUtilityA() {
 }
 
 async function saveUtilityB() {
-  const data = await fetchData("http://192.168.10.51/data");
+  const data = await fetchData("http://192.168.10.50/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Utility B Lantai 5 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -101,8 +101,8 @@ async function saveLt5() {
 }
 
 async function updateLt5() {
-  await updateTempData("http://192.168.10.50/data", 16);
-  await updateTempData("http://192.168.10.51/data", 17);
+  await updateTempData("http://192.168.10.51/data", 16);
+  await updateTempData("http://192.168.10.50/data", 17);
   await updateTempData("http://192.168.10.52/data", 18);
   await updateTempData("http://192.168.10.53/data", 19);
   await updateTempData("http://192.168.10.54/data", 20);

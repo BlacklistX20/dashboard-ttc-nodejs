@@ -215,8 +215,8 @@ async function calculateUps() {
 // Save pue data
 async function savePue() {
   const { pue, loadLvmdp, loadIt, loadFacility } = await calculatePue();
-  const { pRecti } = await calculateRecti;
-  const { pUps } = await calculateUps;
+  const { pRecti } = await calculateRecti();
+  const { pUps } = await calculateUps();
   const datetime = getDate();
   const loadRecti = pRecti ?? 0;
   const loadUps = pUps ?? 0;

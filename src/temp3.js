@@ -13,7 +13,7 @@ async function fetchData(url) {
 }
 
 async function saveBatt3() {
-  const data = await fetchData("http://192.168.10.30/data");
+  const data = await fetchData("http://192.168.10.31/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Baterai Lantai 3 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -29,7 +29,7 @@ async function saveBatt3() {
 }
 
 async function saveRecti3() {
-  const data = await fetchData("http://192.168.10.31/data");
+  const data = await fetchData("http://192.168.10.107/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Recti Lantai 3 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -77,7 +77,7 @@ async function saveOcs() {
 }
 
 async function saveCore() {
-  const data = await fetchData("http://192.168.10.33/data");
+  const data = await fetchData("http://192.168.10.57/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Core Lantai 3 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -118,10 +118,10 @@ async function saveLt3() {
 }
 
 async function updateLt3() {
-  await updateTempData("http://192.168.10.30/data", 5);
-  await updateTempData("http://192.168.10.31/data", 6);
+  await updateTempData("http://192.168.10.31/data", 5);
+  await updateTempData("http://192.168.10.107/data", 6);
   await updateTempData("http://192.168.10.32/data", 7);
-  await updateTempData("http://192.168.10.33/data", 8);
+  await updateTempData("http://192.168.10.57/data", 8);
   await updateTempData("http://192.168.10.34/data", 9);
   await updateTempData("http://192.168.10.35/data", 10);
 }

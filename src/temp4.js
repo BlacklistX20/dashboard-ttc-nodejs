@@ -77,7 +77,7 @@ async function saveInter() {
 }
 
 async function saveTrans() {
-  const data = await fetchData("http://192.168.10.44/data");
+  const data = await fetchData("http://192.168.10.77/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Transmisi Lantai 4 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -105,7 +105,7 @@ async function updateLt4() {
   await updateTempData("http://192.168.10.41/data", 12);
   await updateTempData("http://192.168.10.42/data", 13);
   await updateTempData("http://192.168.10.43/data", 14);
-  await updateTempData("http://192.168.10.44/data", 15);
+  await updateTempData("http://192.168.10.77/data", 15);
 }
 
 module.exports = { saveLt4, updateLt4 };

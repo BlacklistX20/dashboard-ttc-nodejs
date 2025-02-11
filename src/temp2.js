@@ -77,7 +77,7 @@ async function saveGenset() {
 }
 
 async function saveCsps() {
-  const data = await fetchData("http://192.168.10.23/data");
+  const data = await fetchData("http://192.168.10.59/data");
   if (data instanceof Error) {
     console.error(`Error Ruang CSPS Lantai 2 : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -121,7 +121,7 @@ async function updateLt2() {
   await updateTempData("http://192.168.10.20/data", 1);
   await updateTempData("http://192.168.10.21/data", 2);
   await updateTempData("http://192.168.10.22/data", 3);
-  await updateTempData("http://192.168.10.23/data", 4);
+  await updateTempData("http://192.168.10.59/data", 4);
   await updateTempData("http://192.168.10.101/data", 21); // Genset
   await updateTempData("http://192.168.10.100/data", 22); // Trafo
 }

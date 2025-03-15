@@ -35,7 +35,7 @@ function getDate() {
 // Function to process PUE
 async function calculatePue() {
   const urls = [
-    "http://192.168.10.13/data", // lvmdp
+    "http://192.168.10.11/data", // lvmdp
     "http://192.168.10.25/data", // 2.05
     "http://192.168.10.24/data", // 2.36
     "http://192.168.10.36/data", // 3.05
@@ -426,7 +426,7 @@ async function updateUps302() {
 // Save all data simultaneously
 async function saveElecData() {
   await savePue();
-  await saveData("http://192.168.10.13/data", "lvmdp");
+  await saveData("http://192.168.10.11/data", "lvmdp");
   await saveIt();
   await saveRecti();
   await saveUps();
@@ -445,7 +445,7 @@ async function saveElecData() {
 
 async function updateElecData() {
   await updatePue();
-  await updateData("http://192.168.10.13/data", 2);
+  await updateData("http://192.168.10.11/data", 2);
   await updateIt();
   await updateRecti();
   await updateUps();

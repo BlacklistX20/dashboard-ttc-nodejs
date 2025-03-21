@@ -61,7 +61,7 @@ async function saveTrafo() {
 }
 
 async function saveGenset() {
-  const data = await fetchData("http://192.168.10.101/data");
+  const data = await fetchData("http://192.168.10.13/data");
   if (data instanceof Error) {
     console.error(`Error Ruang Genset : ${data.message}`);
     console.error(`Error Details:`, { errno: data.errno, code: data.code });
@@ -122,7 +122,7 @@ async function updateLt2() {
   await updateTempData("http://192.168.10.21/data", 2);
   await updateTempData("http://192.168.10.22/data", 3);
   await updateTempData("http://192.168.10.59/data", 4);
-  await updateTempData("http://192.168.10.101/data", 21); // Genset
+  await updateTempData("http://192.168.10.13/data", 21); // Genset
   await updateTempData("http://192.168.10.100/data", 22); // Trafo
 }
 

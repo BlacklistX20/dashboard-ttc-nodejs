@@ -47,4 +47,15 @@ async function updateTempData(url, id) {
   }
 }
 
+function waitForStatus(data, interval = 1000) {
+  const checkStatus = setInterval(() => {
+    if (data.status == 200) {
+      console.log("OK");
+      clearInterval(checkStatus);
+    } else {
+      console.log(data.status + data.response.data);
+    }
+  }, interval);
+}
+
 module.exports = { fetchData, getDate, updateTempData }

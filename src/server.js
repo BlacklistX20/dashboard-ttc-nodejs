@@ -4,8 +4,8 @@ const { saveLt2, updateLt2 } = require('./temp2');
 const { saveLt3, updateLt3 } = require('./temp3');
 const { saveLt4, updateLt4 } = require('./temp4');
 const { saveLt5, updateLt5 } = require('./temp5');
-const { saveDaily, updateDaily } = require('./fuel');
-const { saveMonthly, updateMonthly } = require('./fuel');
+const { saveDaily, updateDaily, saveMonthly, updateMonthly } = require('./fuel');
+// const { saveMonthly, updateMonthly } = require('./fuel');
 
 electric.connect(function (err) {
   if (err) throw err;
@@ -39,4 +39,4 @@ setInterval(() => {
   saveLt5();
 }, 300000);
 setInterval(saveDaily, 1800000)
-setInterval(saveMonthly, 14400000)
+setInterval(saveMonthly, 3600000)

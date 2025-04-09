@@ -18,7 +18,7 @@ async function saveUtilityA() {
     }
   }, 1000);
   if (data.status == 200) {
-    console.log("Data Saved");
+    console.log("Data Utility A Saved");
   } else if (data.status == 429) {
     console.log(data.response.data);
   } else {
@@ -42,7 +42,7 @@ async function saveUtilityB() {
     };
   }, 1000);
   if (data.status == 200) {
-    console.log("Data Saved");
+    console.log("Data Utility B Saved");
   } else if (data.status == 429) {
     console.log(data.response.data);
   } else {
@@ -66,7 +66,7 @@ async function saveDataCenter() {
     };
   }, 1000);
   if (data.status == 200) {
-    console.log("Data Saved");
+    console.log("Data Data Center Saved");
   } else if (data.status == 429) {
     console.log(data.response.data);
   } else {
@@ -90,7 +90,7 @@ async function savePengembangan() {
     };
   }, 1000);
   if (data.status == 200) {
-    console.log("Data Saved");
+    console.log("Data Pengembangan Saved");
   } else if (data.status == 429) {
     console.log(data.response.data);
   } else {
@@ -114,7 +114,7 @@ async function saveContainment() {
     };
   }, 1000);
   if (data.status == 200) {
-    console.log("Data Saved");
+    console.log("Data Containment Saved");
   } else if (data.status == 429) {
     console.log(data.response.data);
   } else {

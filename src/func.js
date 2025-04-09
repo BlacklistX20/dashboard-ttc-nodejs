@@ -47,15 +47,26 @@ async function updateTempData(url, id) {
   }
 }
 
-function waitForStatus(data, interval = 1000) {
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      console.log("OK");
-      clearInterval(checkStatus);
-    } else {
-      console.log(data.status + data.response.data);
+async function fetchWithRetry(url) {
+  const response = await fetchData(url);
+
+  if (response.status === 200) {
+    return response;
+  }
+
+  if (response.status === 429) {
+    console.warn("Received 429. Waiting 1 minute before retry...");
+    await new Promise((resolve) => setTimeout(resolve, 60000)); // 1 minute
+    const retryResponse = await fetchData(url);
+
+    if (retryResponse.status === 200) {
+      return retryResponse;
     }
-  }, interval);
+
+    throw new Error("Still receiving 429 after retry.");
+  }
+
+  throw new Error(`Fetch failed with status ${response.status}`);
 }
 
-module.exports = { fetchData, getDate, updateTempData }
+module.exports = { fetchData, getDate, updateTempData, fetchWithRetry }

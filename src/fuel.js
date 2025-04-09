@@ -1,65 +1,39 @@
 const axios = require("axios");
 const mysql = require("mysql");
-const { fetchData, getDate } = require("./func");
+const { fetchData, getDate, fetchWithRetry } = require("./func");
 const { fuel } = require("./dbConn");
 
 async function saveDaily() {
-  const daily = await fetchData("http://192.168.10.15/data");
-  if (daily.status == 200) {
+  try {
+    const daily = await fetchWithRetry("http://192.168.10.15/data");
     const datetime = getDate();
     const sql = `INSERT INTO daily (updated_at, tank1, tank2, status) VALUES (?, ?, ?, ?)`;
     fuel.query(sql, [datetime, daily.data.th1, daily.data.th2, "C"], (err) => {
       if (err) {
         console.error("Error Database Tangki Harian :", err);
+      } else {
+        console.log("Daily Tank Data Saved");
       }
     });
-  } else if (daily.status == 429) {
-    setInterval(() => {
-      const datetime = getDate();
-      const sql = `INSERT INTO daily (updated_at, tank1, tank2, status) VALUES (?, ?, ?, ?)`;
-      fuel.query(sql, [datetime, daily.data.th1, daily.data.th2, "C"], (err) => {
-        if (err) {
-          console.error("Error Database Tangki Harian :", err);
-        }
-      });
-    }, 60000);
-  } else {
-    console.error(`Error Tangki Harian : ${data.message}`);
-    console.error(`Error Details :`, { errno: err.errno, code: err.code });
+  } catch (err) {
+    console.error("saveDaily failed:", err.message);
   }
 }
 
 async function saveMonthly() {
-  const month = await fetchData("http://192.168.10.14/data");
-  if (month.status == 200) {
+  try {
+    const month = await fetchData("http://192.168.10.14/data");
     const datetime = getDate();
     const sql = `INSERT INTO monthly (updated_at, tank1, tank2, tank3, status) VALUES (?, ?, ?, ?, ?)`;
-    fuel.query(
-      sql,
-      [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"],
-      (err) => {
-        if (err) {
-          console.error("Error Database Tangki Bulanan :", err);
-        }
+    fuel.query(sql, [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"], (err) => {
+      if (err) {
+        console.error("Error Database Tangki Bulanan :", err);
+      } else {
+        console.log("Monthly Tank Data Saved");
       }
-    );
-  } else if (month.status == 429) {
-    setInterval(() => {
-      const datetime = getDate();
-      const sql = `INSERT INTO monthly (updated_at, tank1, tank2, tank3, status) VALUES (?, ?, ?, ?, ?)`;
-      fuel.query(
-        sql,
-        [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"],
-        (err) => {
-          if (err) {
-            console.error("Error Database Tangki Bulanan :", err);
-          }
-        }
-      );
-    }, 60000);
-  } else {
-    console.error(`Error Tangki Bulanan : ${data.message}`);
-    console.error(`Error Details :`, { errno: err.errno, code: err.code });
+    });
+  } catch (err) {
+    console.error("saveMonthly failed:", err.message);
   }
 }
 

@@ -1,126 +1,81 @@
 const axios = require("axios");
 const mysql = require("mysql");
-const { fetchData, getDate, updateTempData } = require('./func');
+const { fetchData, getDate, updateTempData, fetchWithRetry } = require('./func');
 const { temp } = require('./dbConn');
 
 async function saveUtilityA() {
-  const data = await fetchData("http://192.168.10.51/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-        const datetime = getDate();
+  try {
+    const utilitya = await fetchWithRetry("http://192.168.10.51/data")
+    const datetime = getDate();
         const sql = `INSERT INTO utility_a5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.sAvg, data.data.kAvg], (err) => {
+        temp.query(sql, [datetime, utilitya.data.s1, utilitya.data.k1, utilitya.data.s2, utilitya.data.k2, utilitya.data.sAvg, utilitya.data.kAvg], (err) => {
           if (err) {
             console.error("Error Database Utility A Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
           }
         });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Utility A Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Utility A Lantai 5 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("UtilityA failed:", err.message);
+  }
 }
 
 async function saveUtilityB() {
-  const data = await fetchData("http://192.168.10.50/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const utilityb = await fetchWithRetry("http://192.168.10.50/data")
+    const datetime = getDate();
       const sql = `INSERT INTO utility_b5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, utilityb.data.s1, utilityb.data.k1, utilityb.data.s2, utilityb.data.k2, utilityb.data.sAvg, utilityb.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Utility B Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    };
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Utility B Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Utility B Lantai 5 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("UtilityB failed:", err.message);
+  }
 }
 
 async function saveDataCenter() {
-  const data = await fetchData("http://192.168.10.52/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const dc = await fetchWithRetry("http://192.168.10.52/data")
+    const datetime = getDate();
       const sql = `INSERT INTO data_center5 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.s4, data.data.k4, data.data.s5, data.data.k5, data.data.s6, data.data.k6, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, dc.data.s1, dc.data.k1, dc.data.s2, dc.data.k2, dc.data.s3, dc.data.k3, dc.data.s4, dc.data.k4, dc.data.s5, dc.data.k5, dc.data.s6, dc.data.k6, dc.data.sAvg, dc.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Data Center Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    };
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Data Center Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Data Center Lantai 5 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("DataCenter failed:", err.message);
+  }
 }
 
 async function savePengembangan() {
-  const data = await fetchData("http://192.168.10.53/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const develop = await fetchWithRetry("http://192.168.10.53/data")
+    const datetime = getDate();
       const sql = `INSERT INTO pengembangan5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, develop.data.s1, develop.data.k1, develop.data.s2, develop.data.k2, develop.data.sAvg, develop.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Pengembangan Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    };
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Pengembangan Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Pengembangan Lantai 5 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("Pengembangan failed:", err.message);
+  }
 }
 
 async function saveContainment() {
-  const data = await fetchData("http://192.168.10.54/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const conta = await fetchWithRetry("http://192.168.10.54/data")
+    const datetime = getDate();
       const sql = `INSERT INTO containment5 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, conta.data.s1, conta.data.k1, conta.data.s2, conta.data.k2, conta.data.sAvg, conta.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Containment Lantai 5 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    };
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Containment Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Containment Lantai 5 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("Containment failed:", err.message);
+  }
 }
 
 async function saveLt5() {

@@ -11,8 +11,6 @@ async function saveDaily() {
     fuel.query(sql, [datetime, daily.data.th1, daily.data.th2, "C"], (err) => {
       if (err) {
         console.error("Error Database Tangki Harian :", err);
-      } else {
-        console.log("Daily Tank Data Saved");
       }
     });
   } catch (err) {
@@ -28,8 +26,6 @@ async function saveMonthly() {
     fuel.query(sql, [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"], (err) => {
       if (err) {
         console.error("Error Database Tangki Bulanan :", err);
-      } else {
-        console.log("Monthly Tank Data Saved");
       }
     });
   } catch (err) {
@@ -43,10 +39,14 @@ async function updateDaily() {
   if (daily.status == 200) {
     const datetime = getDate();
     const sql = `UPDATE daily SET updated_at = ?, tank1 = ?, tank2 = ?, status = ? WHERE id = 1`;
-    fuel.query(sql, [datetime, daily.data.th1, daily.data.th2, "C"]);
+    fuel.query(sql, [datetime, daily.data.th1, daily.data.th2, "C"], (err) => {
+      if (err) {
+        console.log("Error saat menyimpan data tangki harian : ", { errno: err.errno, code: err.code, message: err.sqlMessage });
+      }
+    });
   } else if (daily.status == 429) {
     const sql = `UPDATE daily SET status = ? WHERE id = 1`;
-    fuel.query(sql, ["D"]);
+    fuel.query(sql, ["C"]);
   } else {
     const sql = `UPDATE daily SET status = ? WHERE id = 1`;
     fuel.query(sql, ["D"]);
@@ -59,7 +59,11 @@ async function updateMonthly() {
   if (month.status == 200) {
     const datetime = getDate();
     const sql = `UPDATE monthly SET updated_at = ?, tank1 = ?, tank2 = ?, tank3 = ?, status = ? WHERE id = 1`;
-    fuel.query(sql, [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"]);
+    fuel.query(sql, [datetime, month.data.tb1, month.data.tb2, month.data.tb3, "C"], (err) => {
+      if (err) {
+        console.log("Error saat menyimpan data tangki bulanan : ", { errno: err.errno, code: err.code, message: err.sqlMessage });
+      }
+    });
   } else if (month.status == 429) {
     const sql = `UPDATE monthly SET status = ? WHERE id = 1`;
     fuel.query(sql, ["C"]);

@@ -37,6 +37,8 @@ setInterval(() => {
   saveLt3();
   saveLt4();
   saveLt5();
+  // saveDaily();
+  saveMonthly();
 }, 300000);
 setInterval(saveDaily, 1800000)
-setInterval(saveMonthly, 3600000)
+// setInterval(saveMonthly, 3600000)

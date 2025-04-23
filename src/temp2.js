@@ -1,150 +1,96 @@
 const axios = require("axios");
 const mysql = require("mysql");
-const {fetchData, getDate, updateTempData } = require('./func');
+const {fetchData, getDate, updateTempData, fetchWithRetry } = require('./func');
 const { temp } = require('./dbConn');
 
 async function saveBatt2() {
-  const data = await fetchData("http://192.168.10.20/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
-      const sql = `INSERT INTO battery2 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.sAvg, data.data.kAvg], (err) => {
-        if (err) {
-          console.error("Error Database Baterai Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
-        }
-      });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Battery 2 Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Baterai Lantai 2 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  try {
+    const batt2 = await fetchWithRetry("http://192.168.10.20/data");
+    const datetime = getDate();
+    const sql = `INSERT INTO battery2 (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    temp.query(sql, [datetime, batt2.data.s1, batt2.data.k1, batt2.data.s2, batt2.data.k2, batt2.data.sAvg, batt2.data.kAvg], (err) => {
+      if (err) {
+        console.error("Error Database Baterai Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
+      }
+    });
+  } catch (err) {
+    console.error("Battery2 failed:", err.message);
+  }
 }
 
 async function saveRecti2() {
-  const data = await fetchData("http://192.168.10.21/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const recti2 = await fetchWithRetry("http://192.168.10.21/data")
+    const datetime = getDate();
       const sql = `INSERT INTO recti2 (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, recti2.data.s1, recti2.data.k1, recti2.data.s2, recti2.data.k2, recti2.data.s3, recti2.data.k3, recti2.data.sAvg, recti2.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Recti Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Recti 2 Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Recti Lantai 2 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("Recti2 failed:", err.message);
+  }
 }
 
 async function saveTrafo() {
-  const data = await fetchData("http://192.168.10.16/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const trafo = await fetchWithRetry("http://192.168.10.16/data")
+    const datetime = getDate();
       const sql = `INSERT INTO trafo (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, trafo.data.s1, trafo.data.k1, trafo.data.s2, trafo.data.k2, trafo.data.s3, trafo.data.k3, trafo.data.sAvg, trafo.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Trafo :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Trafo Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Trafo : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("Trafo failed:", err.message);
+  }
 }
 
 async function saveGenset() {
-  const data = await fetchData("http://192.168.10.13/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
-      const sql = `INSERT INTO genset (updated_at, t1, h1, t2, h2, t3, h3, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.sAvg, data.data.kAvg], (err) => {
+  try {
+    const genset = await fetchWithRetry("http://192.168.10.13/data")
+    const datetime = getDate();
+      const sql = `INSERT INTO genset (updated_at, t1, h1, t2, h2, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+      temp.query(sql, [datetime, genset.data.s1, genset.data.k1, genset.data.s2, genset.data.k2, genset.data.sAvg, genset.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database Genset :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data Genset Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang Genset : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("Genset failed:", err.message);
+  }
 }
 
 async function saveCsps() {
-  const data = await fetchData("http://192.168.10.59/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const csps = await fetchWithRetry("http://192.168.10.59/data")
+    const datetime = getDate();
       const sql = `INSERT INTO csps2 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.s4, data.data.k4, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, csps.data.s1, csps.data.k1, csps.data.s2, csps.data.k2, csps.data.s3, csps.data.k3, csps.data.s4, csps.data.k4, csps.data.sAvg, csps.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database CSPS Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
         }
       });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data CSPS Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang CSPS Lantai 2 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("CSPS failed:", err.message);
+  }
 }
 
 async function saveMsc() {
-  const data = await fetchData("http://192.168.10.22/data");
-  const checkStatus = setInterval(() => {
-    if (data.status == 200) {
-      const datetime = getDate();
+  try {
+    const msc = await fetchWithRetry("http://192.168.10.22/data")
+    const datetime = getDate();
       const sql = `INSERT INTO msc2 (updated_at, t1, h1, t2, h2, t3, h3, t4, h4, t5, h5, t6, h6, t_avg, h_avg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      temp.query(sql, [datetime, data.data.s1, data.data.k1, data.data.s2, data.data.k2, data.data.s3, data.data.k3, data.data.s4, data.data.k4, data.data.s5, data.data.k5, data.data.s6, data.data.k6, data.data.sAvg, data.data.kAvg], (err) => {
+      temp.query(sql, [datetime, msc.data.s1, msc.data.k1, msc.data.s2, msc.data.k2, msc.data.s3, msc.data.k3, msc.data.s4, msc.data.k4, msc.data.s5, msc.data.k5, msc.data.s6, msc.data.k6, msc.data.sAvg, msc.data.kAvg], (err) => {
         if (err) {
           console.error("Error Database MSC Lantai 2 :", { errno: err.errno, code: err.code, message: err.sqlMessage });
        }
       });
-      clearInterval(checkStatus);
-    }
-  }, 1000);
-  if (data.status == 200) {
-    console.log("Data MSC Saved");
-  } else if (data.status == 429) {
-    console.log(data.response.data);
-  } else {
-    console.error(`Error Ruang MSC Lantai 2 : ${data.message}`);
-    console.error(`Error Details:`, { errno: data.errno, code: data.code });
-  };
+  } catch (err) {
+    console.error("MSC failed:", err.message);
+  }
 }
 
 async function saveLt2() {

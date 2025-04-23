@@ -55,8 +55,8 @@ async function fetchWithRetry(url) {
   }
 
   if (response.status === 429) {
-    console.warn("Received 429. Waiting 1 minute before retry...");
-    await new Promise((resolve) => setTimeout(resolve, 60000)); // 1 minute
+    console.warn("Received 429. Waiting 3 minute before retry...");
+    await new Promise((resolve) => setTimeout(resolve, 180000)); // 1 minute
     const retryResponse = await fetchData(url);
 
     if (retryResponse.status === 200) {

@@ -53,17 +53,21 @@ async function calculatePue() {
 
   let fetchFailed = false; // Flag to track if any fetch fails
   let pSum = 0;
+  const it = [];
 
   responses.forEach((data, i) => {
     if (data) {
       if (i !== 0) { // Skip the first URL for `pSum`
         if (data.p) {
           pSum += parseFloat(data.p);
+          it.push(parseFloat(data.p));
         } else if (data.pA && data.pB) {
           pSum += parseFloat(data.pA) + parseFloat(data.pB);
+          it.push(parseFloat(data.pA), parseFloat(data.pB));
         }
       }
     } else {
+      it.push(0);
       fetchFailed = true; // Mark failure if any fetch is null
     }
   });
@@ -75,7 +79,7 @@ async function calculatePue() {
   const pue = loadLvmdp / loadIt;
   const loadFacility = loadLvmdp - loadIt;
 
-  return { pue, loadLvmdp, loadIt, loadFacility, fetchFailed };
+  return { pue, loadLvmdp, loadIt, loadFacility, it, fetchFailed };
 }
 
 // Function to process IT
@@ -214,18 +218,27 @@ async function calculateUps() {
 
 // Save pue data
 async function savePue() {
-  const { pue, loadLvmdp, loadIt, loadFacility } = await calculatePue();
+  const { pue, loadLvmdp, loadIt, loadFacility, it } = await calculatePue();
   const { pRecti } = await calculateRecti();
   const { pUps } = await calculateUps();
+  const recti = it.slice(0, 5);
+  const ups = it.slice(5);
+  // console.log(recti);
+  const loadRecti2 = recti.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const loadUps2 = ups.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const loadIt2 = it.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  const pue2 = (loadLvmdp / loadIt2).toFixed(2);
   const datetime = getDate();
   const loadRecti = pRecti ?? 0;
-  const loadUps = pUps ?? 0;
-  const sql = `INSERT INTO pue (updated_at, pue, lvmdp, recti, ups, it, facility) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  electric.query(sql, [datetime, pue, loadLvmdp, loadRecti, loadUps, loadIt, loadFacility], (err) => {
-    if (err) {
-      console.error("Error inserting into PUE table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
-    }
-  });
+  const loadUps = pUps ?? 0;  
+  if (pue != 0 || loadLvmdp != 0 || loadIt != 0 || loadFacility !=0) {
+    const sql = `INSERT INTO pue (updated_at, pue, pue2, lvmdp, it, it2, facility, recti, recti2, ups, ups2, p205, p236, p305, p310, p429, ups202, ups203, ups301, ups302, ups501, ups502) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    electric.query(sql, [datetime, pue, pue2, loadLvmdp, loadIt, loadIt2, loadFacility, loadRecti, loadRecti2, loadUps, loadUps2, it[0], it[1], it[2], it[3], it[4], it[5], it[6], it[7], it[8], it[9], it[10]], (err) => {
+      if (err) {
+        console.error("Error inserting into PUE table:", { errno: err.errno, code: err.code, message: err.sqlMessage });
+      }
+    });
+  }
 }
 
 // Save IT data
@@ -384,7 +397,7 @@ async function updateUps202() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
-    electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 11]);
+    electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 12]);
   } else {
     electric.query(sql2, ["D", 11]);
   }
@@ -395,7 +408,7 @@ async function updateUps203() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
     const datetime = getDate();
-    electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 12]);
+    electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 11]);
   } else {
     electric.query(sql2, ["D", 12]);
   }

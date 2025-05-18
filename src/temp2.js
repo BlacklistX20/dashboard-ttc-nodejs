@@ -1,5 +1,5 @@
 const axios = require("axios");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const {fetchData, getDate, updateTempData, fetchWithRetry } = require('./func');
 const { temp } = require('./dbConn');
 

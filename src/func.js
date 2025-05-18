@@ -1,6 +1,6 @@
 const { temp } = require('./dbConn');
 const axios = require("axios");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 // Function to fetch data from a URL
 async function fetchData(url) {

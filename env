@@ -1,0 +1,8 @@
+# .env
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=123
+# DB_NAME_TEMP=temp
+# DB_NAME_ELECTRIC=power
+# DB_NAME_FUEL=fuel
+# DB_PORT=3306

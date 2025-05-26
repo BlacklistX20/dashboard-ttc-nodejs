@@ -2,22 +2,22 @@ const mysql = require("mysql2");
 
 var temp = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "",
+  user: "syfrl",
+  password: "Fos@000",
   database: "temp",
 });
 
 const electric = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "",
-  database: "power", 
+  user: "syfrl",
+  password: "Fos@000",
+  database: "power",
 });
 
 var fuel = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "",
+  user: "syfrl",
+  password: "Fos@000",
   database: "fuel",
 });
 

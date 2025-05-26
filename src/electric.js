@@ -1,13 +1,6 @@
 const axios = require("axios");
 const mysql = require("mysql2");
-
-// MySQL Connection
-const electric = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "power", // Update with your actual database name
-});
+const { electric } = require('./dbConn');
 
 // Function to fetch data from a URL
 async function fetchData(url) {

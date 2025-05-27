@@ -7,20 +7,20 @@ const { saveLt5, updateLt5 } = require('./temp5');
 const { saveDaily, updateDaily, saveMonthly, updateMonthly } = require('./fuel');
 // const { saveMonthly, updateMonthly } = require('./fuel');
 
-electric.connect(function (err) {
-  if (err) throw err;
-  console.log("Electric Database connected!");
-});
+async function testConnections() {
+  try {
+    await electric.query('SELECT 1');
+    console.log('Electric Database connected!');
+    await temp.query('SELECT 1');
+    console.log('Temperature Database connected!');
+    await fuel.query('SELECT 1');
+    console.log('Fuel Tank Database connected!');
+  } catch (err) {
+    console.error('Database connection test failed:', err);
+  }
+}
 
-temp.connect(function (err) {
-  if (err) throw err;
-  console.log("Temperature Database connected!");
-});
-
-fuel.connect(function (err) {
-  if (err) throw err;
-  console.log("Fuel Tank Database connected!");
-});
+testConnections();
 
 setInterval(() => {
   updateElecData();

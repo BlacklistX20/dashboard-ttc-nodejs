@@ -2,6 +2,8 @@ const axios = require("axios");
 const mysql = require("mysql2");
 const { electric } = require('./dbConn');
 
+require('dotenv').config();
+
 // Function to fetch data from a URL
 async function fetchData(url) {
   try {

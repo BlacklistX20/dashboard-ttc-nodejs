@@ -3,6 +3,8 @@ const mysql = require("mysql2");
 const { fetchData, getDate, updateTempData, fetchWithRetry } = require('./func');
 const { temp } = require('./dbConn');
 
+require('dotenv').config();
+
 async function saveBatt3() {
   try {
     const batt3 = await fetchWithRetry("http://192.168.10.31/data");

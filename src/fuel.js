@@ -1,9 +1,8 @@
+require('dotenv').config();
 const axios = require("axios");
 const mysql = require("mysql2");
 const { fetchData, getDate, fetchWithRetry } = require("./func");
 const { fuel } = require("./dbConn");
-
-require('dotenv').config();
 
 async function saveDaily() {
   try {

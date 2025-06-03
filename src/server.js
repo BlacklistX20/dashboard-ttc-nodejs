@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { temp, electric, fuel } = require('./dbConn');
 const { saveElecData, updateElecData } = require('./electric');
 const { saveLt2, updateLt2 } = require('./temp2');
@@ -5,7 +6,6 @@ const { saveLt3, updateLt3 } = require('./temp3');
 const { saveLt4, updateLt4 } = require('./temp4');
 const { saveLt5, updateLt5 } = require('./temp5');
 const { saveDaily, updateDaily, saveMonthly, updateMonthly } = require('./fuel');
-require('dotenv').config();
 
 async function testConnections() {
   try {

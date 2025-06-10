@@ -2,6 +2,7 @@ require('dotenv').config();
 const axios = require("axios");
 const mysql = require("mysql2");
 const { electric } = require('./dbConn');
+const { getDateTime } = require('./func');
 
 // Function to fetch data from a URL
 async function fetchData(url) {
@@ -11,19 +12,6 @@ async function fetchData(url) {
   } catch (err) {
     return null;
   }
-}
-
-function getDate() {
-  const d = new Date();
-  const options = {
-    year: 'numeric', month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  };
-  return d.toLocaleString('en-CA', options).replace(',', '');
 }
 
 // Function to process PUE
@@ -222,7 +210,7 @@ async function savePue() {
   const loadUps2 = ups.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   const loadIt2 = it.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   const pue2 = (loadLvmdp / loadIt2).toFixed(2);
-  const datetime = getDate();
+  const datetime = getDateTime();
   const loadRecti = pRecti ?? 0;
   const loadUps = pUps ?? 0;  
   if (pue != 0 || loadLvmdp != 0 || loadIt != 0 || loadFacility !=0) {
@@ -238,7 +226,7 @@ async function savePue() {
 // Save IT data
 async function saveIt() {
   const { pSum, iSum, vAvg, fAvg } = await calculateIt();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const sql = `INSERT INTO it (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pSum, vAvg, iSum, fAvg], (err) => {
     if (err) {
@@ -250,7 +238,7 @@ async function saveIt() {
 // Save recti data
 async function saveRecti() {
   const { pRecti, iSum, vAvg, fAvg } = await calculateRecti();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const sql = `INSERT INTO recti (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pRecti, vAvg, iSum, fAvg], (err) => {
     if (err) {
@@ -262,7 +250,7 @@ async function saveRecti() {
 // Save UPS data
 async function saveUps() {
   const { pUps, iSum, vAvg, fAvg } = await calculateUps();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const sql = `INSERT INTO ups (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
   electric.query(sql, [datetime, pUps, vAvg, iSum, fAvg], (err) => {
     if (err) {
@@ -274,7 +262,7 @@ async function saveUps() {
 async function saveData(url, name) {
   const data = await fetchData(url);
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const sql = `INSERT INTO ${name} (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.p, data.v, data.i, data.f], (err) => {
       if (err) {
@@ -288,7 +276,7 @@ async function saveData(url, name) {
 async function saveUps202() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const sql = `INSERT INTO ups202 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
       if (err) {
@@ -302,7 +290,7 @@ async function saveUps202() {
 async function saveUps203() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const sql = `INSERT INTO ups203 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
       if (err) {
@@ -316,7 +304,7 @@ async function saveUps203() {
 async function saveUps301() {
   const data = await fetchData("http://192.168.10.38/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const sql = `INSERT INTO ups301 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pA, data.vA, data.iA, data.fA], (err) => {
       if (err) {
@@ -330,7 +318,7 @@ async function saveUps301() {
 async function saveUps302() {
   const data = await fetchData("http://192.168.10.38/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const sql = `INSERT INTO ups302 (updated_at, loads, voltage, current, frequency) VALUES (?, ?, ?, ?, ?)`;
     electric.query(sql, [datetime, data.pB, data.vB, data.iB, data.fB], (err) => {
       if (err) {
@@ -343,7 +331,7 @@ async function saveUps302() {
 // Real Time pue
 async function updatePue() {
   const { pue, fetchFailed } = await calculatePue();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
   const sql = `UPDATE per_second SET last_update = ?, loads = ?, current = 0, voltage = 0, frequency = 0, status = ? WHERE id = 1`;
   electric.query(sql, [datetime, pue, status]);
@@ -355,7 +343,7 @@ const sql2 = `UPDATE per_second SET status = ? WHERE id = ?`
 async function updateData(url, id) {
   const data = await fetchData(url);
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     electric.query(sql, [datetime, data.p, data.i, data.v, data.f, "C", id]);
   } else {
     electric.query(sql2, ["D", id]);
@@ -365,7 +353,7 @@ async function updateData(url, id) {
 // Real Time IT
 async function updateIt() {
   const { pSum, iSum, vAvg, fAvg, fetchFailed } = await calculateIt();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
   electric.query(sql, [datetime, pSum, iSum, vAvg, fAvg, status, 3]);
 }
@@ -373,7 +361,7 @@ async function updateIt() {
 // Real Time recti
 async function updateRecti() {
   const { pRecti, iSum, vAvg, fAvg, fetchFailed } = await calculateRecti();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
   electric.query(sql, [datetime, pRecti, iSum, vAvg, fAvg, status, 4]);
 }
@@ -381,7 +369,7 @@ async function updateRecti() {
 // Real Time UPS
 async function updateUps() {
   const { pUps, iSum, vAvg, fAvg, fetchFailed } = await calculateUps();
-  const datetime = getDate();
+  const datetime = getDateTime();
   const status = fetchFailed ? "D" : "C"; // Set status based on fetch failures
   electric.query(sql, [datetime, pUps, iSum, vAvg, fAvg, status, 5]);
 }
@@ -390,7 +378,7 @@ async function updateUps() {
 async function updateUps202() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 12]);
   } else {
     electric.query(sql2, ["D", 11]);
@@ -401,7 +389,7 @@ async function updateUps202() {
 async function updateUps203() {
   const data = await fetchData("http://192.168.10.26/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 11]);
   } else {
     electric.query(sql2, ["D", 12]);
@@ -412,7 +400,7 @@ async function updateUps203() {
 async function updateUps301() {
   const data = await fetchData("http://192.168.10.38/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     electric.query(sql, [datetime, data.pA, data.iA, data.vA, data.fA, "C", 13]);
   } else {
     electric.query(sql2, ["D", 13]);
@@ -423,7 +411,7 @@ async function updateUps301() {
 async function updateUps302() {
   const data = await fetchData("http://192.168.10.38/data");
   if (data) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     electric.query(sql, [datetime, data.pB, data.iB, data.vB, data.fB, "C", 14]);
   } else {
     electric.query(sql2, ["D", 14]);

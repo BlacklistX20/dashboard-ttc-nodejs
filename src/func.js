@@ -16,17 +16,12 @@ async function fetchData(url) {
 }
 
 // Function to get date with Datetime Format
-function getDate() {
+function getDateTime() {
   const d = new Date();
-  const options = {
-    year: 'numeric', month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  };
-  return d.toLocaleString('en-CA', options).replace(',', '');
+  const pad = (n) => n.toString().padStart(2, '0');
+
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+         `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
 // Function to update Temperature Data data
@@ -35,7 +30,7 @@ async function updateTempData(url, id) {
   const sqlDisconnect = `UPDATE per_second SET status = ? WHERE id = ?`;
   const data = await fetchData(url);
   if (data.status == 200) {
-    const datetime = getDate();
+    const datetime = getDateTime();
     const tempValue = data.data.sAvg ?? 0; // Nullish coalescing operator
     const humValue = data.data.kAvg ?? 0;
     // console.log(tempValue);
@@ -71,4 +66,4 @@ async function fetchWithRetry(url) {
   throw new Error(`Fetch failed with status ${response.status}`);
 }
 
-module.exports = { fetchData, getDate, updateTempData, fetchWithRetry }
+module.exports = { fetchData, getDateTime, updateTempData, fetchWithRetry }
